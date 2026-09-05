@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+config_home="${XDG_CONFIG_HOME:-$HOME/.config}/buchhwin-dwl"
+if command -v kitty >/dev/null 2>&1; then
+  exec kitty --config "$config_home/kitty.conf" "$@"
+fi
+if (( $# )); then
+  exec alacritty --config-file "$config_home/alacritty.toml" -e "$@"
+fi
+exec alacritty --config-file "$config_home/alacritty.toml"

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+settings="${XDG_CONFIG_HOME:-$HOME/.config}/buchhwin-dwl/settings.env"
+[[ -f "$settings" ]] && source "$settings"
+browser_command="${BROWSER:-brave}"
+if command -v "${browser_command%% *}" >/dev/null 2>&1; then
+  exec sh -lc "$browser_command"
+fi
+desktop="$(xdg-settings get default-web-browser 2>/dev/null || true)"
+if [[ -n "$desktop" ]] && command -v gtk-launch >/dev/null 2>&1; then
+  exec gtk-launch "${desktop%.desktop}"
+fi
+for browser in brave brave-browser firefox chromium google-chrome-stable vivaldi; do
+  command -v "$browser" >/dev/null 2>&1 && exec "$browser"
+done
+notify-send "buchhwin" "No browser found. Set BROWSER in ~/.config/buchhwin-dwl/settings.env"
+exit 1

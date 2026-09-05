@@ -1,0 +1,9 @@
+# Dedicated shell configuration for the Fedora dwl session.
+# It deliberately does not source the account's personal dotfiles.
+export PATH="$HOME/.local/bin:$PATH"
+
+if [[ -o interactive ]]; then
+  command -v fastfetch >/dev/null 2>&1 \
+    && fastfetch --config "$HOME/.config/buchhwin-dwl/fastfetch.jsonc"
+  command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
+fi
