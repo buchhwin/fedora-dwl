@@ -205,6 +205,10 @@ grep -q 'com.brave.Browser' install-fedora.sh \
   echo "Installer must provision the complete Flatpak application set." >&2
   exit 1
 }
+grep -q 'org.gnome.Papers.desktop application/pdf' install-fedora.sh || {
+  echo "PDF files must default to GNOME Papers instead of the browser or office suite." >&2
+  exit 1
+}
 grep -q '^BROWSER=brave$' config/settings.env || {
   echo "Brave must remain the default buchhwin browser." >&2
   exit 1

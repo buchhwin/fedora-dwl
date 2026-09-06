@@ -83,6 +83,15 @@ if (( ! PREPARE_ONLY )); then
   flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
   flatpak install --user -y flathub com.brave.Browser com.visualstudio.code org.onlyoffice.desktopeditors
   xdg-settings set default-web-browser com.brave.Browser.desktop || true
+  # Keep local documents in the lightweight GNOME applications. In
+  # particular, browsers and office suites must not take over PDF files.
+  xdg-mime default org.gnome.Papers.desktop application/pdf
+  xdg-mime default org.gnome.Loupe.desktop image/jpeg
+  xdg-mime default org.gnome.Loupe.desktop image/png
+  xdg-mime default org.gnome.TextEditor.desktop text/plain
+  xdg-mime default org.gnome.Showtime.desktop video/mp4
+  xdg-mime default org.gnome.Decibels.desktop audio/mpeg
+  xdg-mime default org.gnome.Nautilus.desktop inode/directory
 fi
 
 # Starship is not shipped by Fedora. Install a pinned standalone binary into
