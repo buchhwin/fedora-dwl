@@ -104,8 +104,12 @@ old_initial_blur = r'''
 				wlr_scene_buffer_set_backdrop_blur_ignore_transparent(buffer, blur_ignore_transparent);
 			}'''
 new_initial_blur = r'''
-			if (blur && c->blur)
-				wlr_scene_blur_set_transparency_mask_source(c->blur, buffer);'''
+			/* The blur node already sits below the client surface.  Do not use the
+			 * client buffer as a transparency mask here: some terminals submit a
+			 * mostly opaque shm/dmabuf and implement background opacity while
+			 * rendering.  SceneFX then interprets that mask as fully opaque and the
+			 * transparent terminal background becomes black.  Blurring the complete
+			 * client rectangle is safe because opaque client pixels cover it. */'''
 if old_initial_blur not in text:
     raise SystemExit("SceneFX port failed: initial blur API block missing")
 text = text.replace(old_initial_blur, new_initial_blur, 1)
@@ -116,11 +120,9 @@ old_update_blur = r'''
 				wlr_scene_buffer_set_backdrop_blur_optimized(buffer, blur_optimized);
 			}'''
 new_update_blur = r'''
-			if (blur && c->blur) {
-				wlr_scene_blur_set_transparency_mask_source(c->blur, buffer);
+			if (blur && c->blur)
 				wlr_scene_blur_set_should_only_blur_bottom_layer(c->blur,
-						!c->isfloating || blur_xray);
-			}'''
+						!c->isfloating || blur_xray);'''
 if old_update_blur not in text:
     raise SystemExit("SceneFX port failed: update blur API block missing")
 text = text.replace(old_update_blur, new_update_blur, 1)

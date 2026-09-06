@@ -104,6 +104,10 @@ grep -q 'patch-dwl-source.py' scripts/build-dwl-fedora.sh || {
   echo "Fedora build must apply the isolated source compatibility patch." >&2
   exit 1
 }
+! grep -Fq 'wlr_scene_blur_set_transparency_mask_source(c->blur, buffer)' scripts/patch-dwl-source.py || {
+  echo "SceneFX terminal blur must not use the client buffer as an opacity mask" >&2
+  exit 1
+}
 for commit in d41ecb745cc94fbb48e93af01f5fd5d0b2488945 \
               3606f3d3bb4bb97e13228adc5190bf57fc687c88 \
               dc517160a550da7da1b8e0f14cff624f56e94203; do
