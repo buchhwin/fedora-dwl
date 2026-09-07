@@ -21,7 +21,10 @@ if [[ -o interactive ]]; then
   zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
   bindkey '^I' expand-or-complete
 
-  command -v fastfetch >/dev/null 2>&1 && fastfetch
+  fastfetch_start_file="${ZDOTDIR:-$HOME/.config/buchhwin-dwl/zsh}/../fastfetch-on-start"
+  if [[ ! -r "$fastfetch_start_file" || "$(<$fastfetch_start_file)" != "0" ]]; then
+    command -v fastfetch >/dev/null 2>&1 && fastfetch
+  fi
   command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 
   [[ -r /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] \

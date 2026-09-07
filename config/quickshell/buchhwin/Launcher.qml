@@ -91,8 +91,8 @@ PanelWindow {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: Math.max(90, parent.height * 0.15)
-        width: Math.min(900, parent.width - 64)
-        height: Math.min(680, parent.height - 130)
+        width: Math.min(1060, parent.width - 64)
+        height: Math.min(760, parent.height - 110)
         opacity: root.reveal
         transform: Translate { y: (1 - root.reveal) * theme.lift }
         radius: 0
@@ -104,21 +104,21 @@ PanelWindow {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 20
-            spacing: 12
+            anchors.margins: 24
+            spacing: 14
 
             RowLayout {
                 Layout.fillWidth: true
                 Text { font.family: theme.font; text: ""; color: theme.blue; font.pixelSize: 26 }
-                Text { font.family: theme.font; text: "buchhwin"; color: theme.text; font.pixelSize: 21; font.bold: true }
+                Text { font.family: theme.font; text: "Applications"; color: theme.text; font.pixelSize: 24; font.bold: true }
                 Item { Layout.fillWidth: true }
-                Text { font.family: theme.font; text: "SUPER + D"; color: theme.subtext; font.pixelSize: 11 }
+                Text { font.family: theme.font; text: "SUPER + D"; color: theme.subtext; font.pixelSize: 12 }
             }
 
             Rectangle {
                 Layout.fillWidth: true
-                height: 50
-                radius: 0
+                height: 56
+                radius: 8
                 color: theme.surface2
                 border.width: search.activeFocus ? 2 : 1
                 border.color: search.activeFocus ? theme.blue : theme.border
@@ -128,7 +128,7 @@ PanelWindow {
                     anchors.verticalCenter: parent.verticalCenter
                     text: ""
                     color: theme.blue
-                    font.pixelSize: 16
+                    font.pixelSize: 18
                 }
 
                 TextInput { font.family: theme.font;
@@ -139,7 +139,7 @@ PanelWindow {
                     color: theme.text
                     selectionColor: theme.blue
                     selectedTextColor: theme.bg
-                    font.pixelSize: 15
+                    font.pixelSize: 17
                     clip: true
                     text: root.query
                     onTextChanged: { root.query = text; root.selectedIndex = 0 }
@@ -156,25 +156,25 @@ PanelWindow {
                     visible: search.text.length === 0
                     text: "Search applications"
                     color: theme.subtext
-                    font.pixelSize: 15
+                    font.pixelSize: 17
                 }
             }
 
             Text { font.family: theme.font;
                 Layout.fillWidth: true
-                Layout.leftMargin: 154
+                Layout.leftMargin: 190
                 text: root.filteredApps.length + " applications"
                 color: theme.subtext
-                font.pixelSize: 11
+                font.pixelSize: 12
             }
 
             ListView {
                 id: appList
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.leftMargin: 154
+                Layout.leftMargin: 190
                 clip: true
-                spacing: 5
+                spacing: 7
                 model: ScriptModel { values: root.filteredApps }
                 currentIndex: root.selectedIndex
                 onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Contain)
@@ -183,8 +183,8 @@ PanelWindow {
                     required property var modelData
                     required property int index
                     width: appList.width
-                    height: 52
-                    radius: 11
+                    height: 64
+                    radius: 12
                     color: index === root.selectedIndex ? theme.surface3 : appMouse.containsMouse ? theme.surface2 : "transparent"
                     Behavior on color { ColorAnimation { duration: theme.durationFast } }
                     border.width: index === root.selectedIndex ? 1 : 0
@@ -192,18 +192,18 @@ PanelWindow {
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 12; anchors.rightMargin: 12
-                        spacing: 12
+                        anchors.leftMargin: 14; anchors.rightMargin: 14
+                        spacing: 14
                         Image {
-                            Layout.preferredWidth: 30; Layout.preferredHeight: 30
+                            Layout.preferredWidth: 38; Layout.preferredHeight: 38
                             source: Quickshell.iconPath(modelData.icon || "application-x-executable", "application-x-executable")
-                            sourceSize.width: 30; sourceSize.height: 30
+                            sourceSize.width: 38; sourceSize.height: 38
                         }
                         ColumnLayout {
                             Layout.fillWidth: true
-                            spacing: 1
-                            Text { font.family: theme.font; Layout.fillWidth: true; text: modelData.name || modelData.id; color: theme.text; font.pixelSize: 14; font.bold: index === root.selectedIndex; elide: Text.ElideRight }
-                            Text { font.family: theme.font; Layout.fillWidth: true; visible: (modelData.genericName || "").length > 0; text: modelData.genericName || ""; color: theme.subtext; font.pixelSize: 10; elide: Text.ElideRight }
+                            spacing: 3
+                            Text { font.family: theme.font; Layout.fillWidth: true; text: modelData.name || modelData.id; color: theme.text; font.pixelSize: 16; font.bold: index === root.selectedIndex; elide: Text.ElideRight }
+                            Text { font.family: theme.font; Layout.fillWidth: true; visible: (modelData.genericName || "").length > 0; text: modelData.genericName || ""; color: theme.subtext; font.pixelSize: 12; elide: Text.ElideRight }
                         }
                     }
 
@@ -218,25 +218,25 @@ PanelWindow {
                 }
             }
 
-            Text { font.family: theme.font; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight; text: "↑/↓ select   Enter launch   Esc close"; color: theme.subtext; font.pixelSize: 10 }
+            Text { font.family: theme.font; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight; text: "↑ ↓  Select     Enter  Open     Esc  Close"; color: theme.subtext; font.pixelSize: 11 }
         }
 
         Rectangle {
             anchors.left: parent.left; anchors.leftMargin: 18
-            anchors.top: parent.top; anchors.topMargin: 148
-            anchors.bottom: parent.bottom; anchors.bottomMargin: 38
-            width: 142; radius: 10; color: theme.surface2
+            anchors.top: parent.top; anchors.topMargin: 161
+            anchors.bottom: parent.bottom; anchors.bottomMargin: 43
+            width: 174; radius: 12; color: theme.surface2
             Column {
-                anchors.fill: parent; anchors.margins: 7; spacing: 5
+                anchors.fill: parent; anchors.margins: 9; spacing: 7
                 Repeater {
                     model: root.categories
                     delegate: Rectangle {
                         required property var modelData
-                        width: parent.width; height: 48; radius: 8
+                        width: parent.width; height: 52; radius: 8
                         color: root.category === modelData[1] ? theme.surface3 : categoryMouse.containsMouse ? theme.bg : "transparent"
-                        Row { anchors.left: parent.left; anchors.leftMargin: 9; anchors.verticalCenter: parent.verticalCenter; spacing: 8
-                            Text { text: modelData[0]; color: theme.blue; font.family: theme.font; font.pixelSize: 16 }
-                            Text { text: modelData[1]; color: theme.text; font.family: theme.font; font.pixelSize: 11; font.bold: root.category === modelData[1] }
+                        Row { anchors.left: parent.left; anchors.leftMargin: 11; anchors.verticalCenter: parent.verticalCenter; spacing: 10
+                            Text { text: modelData[0]; color: theme.blue; font.family: theme.font; font.pixelSize: 17 }
+                            Text { text: modelData[1]; color: theme.text; font.family: theme.font; font.pixelSize: 13; font.bold: root.category === modelData[1] }
                         }
                         MouseArea { id: categoryMouse; anchors.fill: parent; hoverEnabled: true; onClicked: { root.category = modelData[1]; root.selectedIndex = 0 } }
                     }

@@ -26,6 +26,19 @@ PanelWindow {
     property bool brightnessDragging: false
     property var player: mediaState.player
 
+    function batteryStatus() {
+        const device = UPower.displayDevice
+        const charging = device.state === UPowerDeviceState.Charging || device.state === UPowerDeviceState.PendingCharge
+        const seconds = charging ? device.timeToFull : device.timeToEmpty
+        let label = charging ? "Charging" : device.state === UPowerDeviceState.FullyCharged ? "Fully charged" : "On battery"
+        if (seconds > 60) {
+            const hours = Math.floor(seconds / 3600)
+            const minutes = Math.round((seconds % 3600) / 60)
+            label += "  ·  " + (hours > 0 ? hours + " h " : "") + minutes + " min " + (charging ? "until full" : "remaining")
+        }
+        return label
+    }
+
     // Full management lives in dedicated panels rather than in external
     // programs; shell.qml wires these up.
     property var networkPanel: null
@@ -327,13 +340,32 @@ PanelWindow {
 
                 Rectangle {
                     visible: UPower.displayDevice.ready && UPower.displayDevice.isLaptopBattery
-                    Layout.fillWidth: true; height: 60; radius: 14; color: theme.surface2
-                    border.width: 1; border.color: theme.border
-                    RowLayout {
-                        anchors.fill: parent; anchors.leftMargin: 14; anchors.rightMargin: 14
-                        Text { font.family: theme.font; text: "󰁹  Battery"; color: theme.text; font.bold: true }
-                        Item { Layout.fillWidth: true }
-                        Text { font.family: theme.font; text: Math.round(UPower.displayDevice.percentage * 100) + "%"; color: UPower.displayDevice.percentage < 0.20 ? theme.red : theme.green; font.bold: true }
+                    Layout.fillWidth: true; height: 98; radius: 14; color: theme.surface2
+                    border.width: 1
+                    border.color: UPower.displayDevice.percentage < 0.20 ? theme.red : theme.border
+                    ColumnLayout {
+                        anchors.fill: parent; anchors.margins: 14; spacing: 7
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Text { font.family: theme.font; text: "󰁹  Battery"; color: theme.text; font.bold: true; font.pixelSize: 12 }
+                            Item { Layout.fillWidth: true }
+                            Text {
+                                font.family: theme.font
+                                text: Math.round(UPower.displayDevice.percentage * 100) + "%"
+                                color: UPower.displayDevice.percentage < 0.20 ? theme.red : theme.blue
+                                font.bold: true; font.pixelSize: 16
+                            }
+                        }
+                        Text { Layout.fillWidth: true; text: root.batteryStatus(); color: theme.subtext; font.family: theme.font; font.pixelSize: 9; elide: Text.ElideRight }
+                        Rectangle {
+                            Layout.fillWidth: true; height: 6; radius: 3; color: theme.bg
+                            Rectangle {
+                                width: parent.width * Math.max(0, Math.min(1, UPower.displayDevice.percentage))
+                                height: parent.height; radius: 3
+                                color: UPower.displayDevice.percentage < 0.20 ? theme.red : theme.blue
+                                Behavior on width { NumberAnimation { duration: theme.durationMedium; easing.type: theme.easingEnter } }
+                            }
+                        }
                     }
                 }
 
@@ -341,9 +373,6 @@ PanelWindow {
                     Layout.fillWidth: true; columns: 2; columnSpacing: 10; rowSpacing: 10
                     Repeater {
                         model: [
-                            ["󰤇", "Networks", ["buchhwin-network"]],
-                            ["󰂯", "Bluetooth", ["buchhwin-bluetooth"]],
-                            ["󰕾", "Sound", ["buchhwin-sound"]],
                             ["󰹑", "Screenshot", ["buchhwin-screenshot","region"]],
                             ["󰅍", "Clipboard", ["buchhwin-clipboard","toggle"]],
                             ["󰒓", "All settings", ["buchhwin-settings"]]

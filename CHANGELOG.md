@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Increase launcher typography, spacing and app icon size for clearer scanning.
+- Polish the Control Center battery card and remove duplicate connectivity shortcuts.
+- Add a terminal-start Fastfetch switch and clearer clock-format presets.
 - Make manual `fastfetch` use the dwl profile and add the `ff` shortcut.
 - Add dwl-only theme presets, custom colors, Nerd Font selection and all four
   bar positions; improve weather alignment/location naming and battery hover.

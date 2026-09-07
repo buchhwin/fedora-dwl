@@ -267,6 +267,10 @@ The same Appearance page controls dwl-only theme presets, accent/background/
 bar/text colors, the shell Nerd Font and top/bottom/left/right bar position.
 These values are isolated from Plasma and do not modify KDE's theme or fonts.
 
+The Terminal settings include common 12/24-hour clock formats and a switch for
+showing Fastfetch when a terminal opens. Manual `fastfetch` and `ff` remain
+available when the startup display is disabled.
+
 After changing a setting that affects the compositor, rebuild/install it with:
 
 ```bash

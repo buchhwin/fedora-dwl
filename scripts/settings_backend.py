@@ -14,6 +14,7 @@ home = Path.home()
 config_home = Path(os.environ.get("XDG_CONFIG_HOME", home / ".config"))
 state_dir = config_home / "buchhwin-dwl"
 starship_file = state_dir / "starship.toml"
+fastfetch_startup_file = state_dir / "fastfetch-on-start"
 keybind_file = state_dir / "keybinds.json"
 
 MIMES = {
@@ -182,18 +183,21 @@ def starship_state() -> dict:
         "docker": False, "commandDuration": True, "durationMin": 1500,
         "jobs": True, "time": False, "timeFormat": "%H:%M",
         "username": False, "hostname": False, "twoLine": False,
-        "newline": False, "previewGit": True,
+        "newline": False, "previewGit": True, "startupFastfetch": True,
     }
     path = state_dir / "starship.json"
     if path.exists():
         try: state.update(json.loads(path.read_text()))
         except Exception: pass
+    if fastfetch_startup_file.exists():
+        state["startupFastfetch"] = fastfetch_startup_file.read_text().strip() != "0"
     return state
 
 
 def write_starship(state: dict) -> None:
     state_dir.mkdir(parents=True, exist_ok=True)
     (state_dir / "starship.json").write_text(json.dumps(state, indent=2) + "\n")
+    fastfetch_startup_file.write_text("1\n" if state["startupFastfetch"] else "0\n")
     modules = []
     if state["username"]: modules.append("$username")
     if state["hostname"]: modules.append("$hostname")

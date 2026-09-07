@@ -40,6 +40,18 @@ Flickable {
                 }
             }
         }
+        Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 54; color: theme.surface2; border.width: 1; border.color: theme.border; radius: 7
+            RowLayout { anchors.fill: parent; anchors.margins: 10
+                ColumnLayout { Layout.fillWidth: true; spacing: 1
+                    Text { text: "Show Fastfetch when terminal opens"; color: theme.text; font.family: theme.font; font.pixelSize: 11 }
+                    Text { text: "Manual fastfetch and ff commands always remain available"; color: theme.subtext; font.family: theme.font; font.pixelSize: 9 }
+                }
+                Rectangle { width: 46; height: 25; radius: 13; color: root.state.startupFastfetch ? theme.blue : theme.bg
+                    Rectangle { width: 19; height: 19; radius: 10; y: 3; x: root.state.startupFastfetch ? 24 : 3; color: theme.text; Behavior on x { NumberAnimation { duration: theme.durationFast } } }
+                    MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: root.setValue("startupFastfetch", !root.state.startupFastfetch) }
+                }
+            }
+        }
         Text { text: root.message; color: theme.blue; font.family: theme.font; font.pixelSize: 10 }
 
         Text { text: "Colors"; color: theme.text; font.family: theme.font; font.pixelSize: 14; font.bold: true }
@@ -78,7 +90,32 @@ Flickable {
             ColumnLayout { Layout.fillWidth: true; Text { text: "Directory depth: " + (root.state.directoryTruncation || 3); color: theme.subtext; font.family: theme.font; font.pixelSize: 10 } ValueSlider { Layout.fillWidth: true; from: 1; to: 10; suffix: ""; value: root.state.directoryTruncation || 3; onValueEdited: value => root.setValue("directoryTruncation", Math.round(value)) } }
             ColumnLayout { Layout.fillWidth: true; Text { text: "Duration threshold: " + (root.state.durationMin || 1500) + " ms"; color: theme.subtext; font.family: theme.font; font.pixelSize: 10 } ValueSlider { Layout.fillWidth: true; from: 100; to: 10000; suffix: "ms"; value: root.state.durationMin || 1500; onValueEdited: value => root.setValue("durationMin", Math.round(value / 100) * 100) } }
         }
-        RowLayout { Text { text: "Time format"; color: theme.subtext; font.family: theme.font; font.pixelSize: 10 } Rectangle { width: 130; height: 36; color: theme.surface2; border.width: 1; border.color: theme.border; TextInput { id: timeFormatInput; anchors.fill: parent; anchors.margins: 8; text: root.state.timeFormat || "%H:%M"; color: theme.text; font.family: theme.font; selectByMouse: true } } Rectangle { width: 62; height: 36; color: theme.blue; Text { anchors.centerIn: parent; text: "Apply"; color: theme.bg; font.family: theme.font; font.pixelSize: 9 } MouseArea { anchors.fill: parent; onClicked: root.setValue("timeFormat", timeFormatInput.text) } } }
+        Text { text: "Clock format"; color: theme.subtext; font.family: theme.font; font.pixelSize: 10 }
+        GridLayout {
+            Layout.fillWidth: true; columns: 4; columnSpacing: 8; rowSpacing: 8
+            Repeater {
+                model: [["21:45", "%H:%M"], ["9:45 PM", "%I:%M %p"], ["21:45:30", "%H:%M:%S"], ["07.09 21:45", "%d.%m %H:%M"]]
+                delegate: Rectangle {
+                    required property var modelData
+                    Layout.fillWidth: true; height: 38; radius: 6
+                    color: root.state.timeFormat === modelData[1] ? theme.blue : theme.surface2
+                    border.width: 1; border.color: theme.border
+                    Text { anchors.centerIn: parent; text: modelData[0]; color: root.state.timeFormat === modelData[1] ? theme.bg : theme.text; font.family: theme.font; font.pixelSize: 10 }
+                    MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: root.setValue("timeFormat", modelData[1]) }
+                }
+            }
+        }
+        RowLayout {
+            Text { text: "Custom"; color: theme.subtext; font.family: theme.font; font.pixelSize: 10 }
+            Rectangle { width: 160; height: 36; color: theme.surface2; border.width: 1; border.color: theme.border
+                TextInput { id: timeFormatInput; anchors.fill: parent; anchors.margins: 8; text: root.state.timeFormat || "%H:%M"; color: theme.text; font.family: theme.font; selectByMouse: true }
+            }
+            Rectangle { width: 62; height: 36; color: theme.blue
+                Text { anchors.centerIn: parent; text: "Apply"; color: theme.bg; font.family: theme.font; font.pixelSize: 9 }
+                MouseArea { anchors.fill: parent; onClicked: root.setValue("timeFormat", timeFormatInput.text) }
+            }
+            Text { text: "%H hour  %M minute  %S second  %p AM/PM"; color: theme.subtext; font.family: theme.font; font.pixelSize: 9 }
+        }
         Text { Layout.fillWidth: true; text: "Stored in ~/.config/buchhwin-dwl/starship.toml and used only by terminals launched inside this dwl session."; color: theme.subtext; font.family: theme.font; font.pixelSize: 10; wrapMode: Text.WordWrap }
         Item { Layout.preferredHeight: 8 }
     }
