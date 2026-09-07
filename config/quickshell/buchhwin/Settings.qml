@@ -24,7 +24,8 @@ PanelWindow {
     property string displayMessage: ""
     property var iconPacks: []
     property var cursorPacks: []
-    property var appearanceState: ({"icons":"breeze-dark", "cursor":"breeze_cursors", "cursorSize":24, "gaps":8, "border":1})
+    property var fontPacks: []
+    property var appearanceState: ({"icons":"breeze-dark", "cursor":"breeze_cursors", "cursorSize":24, "gaps":8, "border":1, "font":"MesloLGS Nerd Font Mono", "theme":"graphite", "accent":"#d0d0d0", "background":"#181818", "bar":"#242424", "text":"#eeeeee", "barPosition":"top"})
     property string appearanceMessage: ""
 
     // Network, Bluetooth and sound are handled by the shell's own panels
@@ -222,7 +223,7 @@ PanelWindow {
     Process {
         id: appearanceRead
         command: ["buchhwin-appearance", "list"]
-        stdout: StdioCollector { onStreamFinished: { try { const data = JSON.parse(text); root.appearanceState = data.state; root.iconPacks = data.icons; root.cursorPacks = data.cursors } catch (error) {} } }
+        stdout: StdioCollector { onStreamFinished: { try { const data = JSON.parse(text); root.appearanceState = data.state; root.iconPacks = data.icons; root.cursorPacks = data.cursors; root.fontPacks = data.fonts } catch (error) {} } }
     }
     Process {
         id: appearanceWrite
@@ -390,6 +391,16 @@ PanelWindow {
                                         }
                                     }
                                 }
+                            }
+                        }
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 315
+                            AppearanceStyleSettings {
+                                anchors.fill: parent
+                                state: root.appearanceState
+                                fonts: root.fontPacks
+                                onSetValue: (key, value) => root.setAppearance(key, value)
                             }
                         }
                         Rectangle {

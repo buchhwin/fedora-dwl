@@ -106,9 +106,16 @@ Scope {
             required property var modelData
             screen: modelData
             color: "transparent"
-            implicitHeight: 38
-            exclusiveZone: 38
-            anchors { top: true; left: true; right: true }
+            property bool vertical: theme.barPosition === "left" || theme.barPosition === "right"
+            implicitHeight: vertical ? 0 : 38
+            implicitWidth: vertical ? 44 : 0
+            exclusiveZone: vertical ? 44 : 38
+            anchors {
+                top: theme.barPosition === "top" || vertical
+                bottom: theme.barPosition === "bottom" || vertical
+                left: theme.barPosition === "left" || !vertical
+                right: theme.barPosition === "right" || !vertical
+            }
 
             property var outputState: root.stateFor(modelData.name)
             property int occupiedMask: Number(outputState.occupied || 0)
@@ -142,6 +149,7 @@ Scope {
                 }
 
                 RowLayout {
+                    visible: !panel.vertical
                     anchors.fill: parent
                     anchors.leftMargin: 7
                     anchors.rightMargin: 7
@@ -239,7 +247,7 @@ Scope {
 
                     Rectangle {
                         visible: root.weather.temperature !== null
-                        width: weatherMouse.containsMouse ? Math.min(150, weatherLocation.implicitWidth + 18) : 62
+                        width: weatherMouse.containsMouse ? Math.min(180, weatherLocation.implicitWidth + 52) : 66
                         Layout.preferredWidth: width
                         Layout.fillHeight: true
                         color: weatherMouse.containsMouse ? theme.surface3 : "transparent"
@@ -253,13 +261,18 @@ Scope {
                                 text: root.weather.icon || "󰖪"
                                 color: root.weather.iconColor || theme.yellow
                                 font.pixelSize: 19
+                                anchors.verticalCenter: parent.verticalCenter
                             }
                             Text {
                                 id: weatherLocation
                                 font.family: theme.font
-                                text: weatherMouse.containsMouse ? root.weather.location : root.weather.temperature + "°"
+                                text: weatherMouse.containsMouse
+                                      ? (root.weather.precise ? root.weather.location : "≈ " + root.weather.location)
+                                      : root.weather.temperature + "°C"
                                 color: theme.text
                                 font.pixelSize: 11
+                                verticalAlignment: Text.AlignVCenter
+                                anchors.verticalCenter: parent.verticalCenter
                                 elide: Text.ElideRight
                                 width: weatherMouse.containsMouse ? Math.min(112, implicitWidth) : implicitWidth
                             }
@@ -388,23 +401,26 @@ Scope {
 
                     Rectangle {
                         visible: UPower.displayDevice.ready && UPower.displayDevice.isLaptopBattery
-                        implicitWidth: batMouse.containsMouse ? 78 : 30
+                        implicitWidth: batMouse.containsMouse ? 88 : 34
                         Layout.preferredWidth: implicitWidth
                         Behavior on implicitWidth { NumberAnimation { duration: theme.durationFast; easing.type: theme.easingEnter } }
                         height: 30; radius: 0; color: batMouse.containsMouse ? theme.surface3 : "transparent"
                         Behavior on color { ColorAnimation { duration: theme.durationFast } }
-                        Text { font.family: theme.font;
-                            id: batteryLabel
-                            anchors.centerIn: parent
-                            text: batMouse.containsMouse
-                                  ? root.batteryIcon() + "  " + Math.round(UPower.displayDevice.percentage * 100) + "%"
-                                  : root.batteryIcon()
-                            color: (UPower.displayDevice.state === UPowerDeviceState.Charging
-                                    || UPower.displayDevice.state === UPowerDeviceState.PendingCharge)
-                                   ? theme.blue
-                                   : UPower.displayDevice.percentage < 0.20 ? theme.red : theme.text
-                            Behavior on color { ColorAnimation { duration: theme.durationFast } }
-                            font.pixelSize: 16
+                        Row {
+                            anchors.centerIn: parent; spacing: 6
+                            Text { font.family: theme.font;
+                                text: root.batteryIcon()
+                                color: (UPower.displayDevice.state === UPowerDeviceState.Charging
+                                        || UPower.displayDevice.state === UPowerDeviceState.PendingCharge)
+                                       ? theme.blue : UPower.displayDevice.percentage < 0.20 ? theme.red : theme.text
+                                font.pixelSize: 16; anchors.verticalCenter: parent.verticalCenter
+                            }
+                            Text {
+                                visible: batMouse.containsMouse
+                                text: Math.round(UPower.displayDevice.percentage * 100) + "%"
+                                font.family: theme.font; font.pixelSize: 11; font.bold: true
+                                color: theme.text; anchors.verticalCenter: parent.verticalCenter
+                            }
                         }
                         MouseArea { id: batMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: Quickshell.execDetached(["buchhwin-control-center"]) }
                     }
@@ -442,6 +458,57 @@ Scope {
                             cursorShape: Qt.PointingHandCursor
                             onClicked: Quickshell.execDetached(["buchhwin-settings"])
                         }
+                    }
+                }
+
+                // Vertical positions use a compact icon-first layout so text
+                // and workspace controls remain readable on narrow panels.
+                Column {
+                    visible: panel.vertical
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.top: parent.top; anchors.topMargin: 6
+                    spacing: 5
+                    Text { anchors.horizontalCenter: parent.horizontalCenter; text: ""; color: theme.blue; font.family: theme.font; font.pixelSize: 19 }
+                    Repeater {
+                        model: 9
+                        delegate: Rectangle {
+                            required property int index
+                            property int bit: 1 << index
+                            width: 30; height: 27; radius: 4
+                            color: (panel.selectedMask & bit) !== 0 ? theme.surface3 : (panel.urgentMask & bit) !== 0 ? theme.red : "transparent"
+                            Text { anchors.centerIn: parent; text: index + 1; color: (panel.occupiedMask & parent.bit) !== 0 ? theme.text : theme.subtext; font.family: theme.font; font.pixelSize: 11 }
+                        }
+                    }
+                    Rectangle { width: 30; height: 1; color: theme.border }
+                    Repeater {
+                        model: [
+                            [root.weather.icon || "󰖪", "weather"],
+                            [root.networkText === "offline" ? "󰤭" : "󰤨", "network"],
+                            [root.bluetoothEnabled ? "󰂯" : "󰂲", "bluetooth"],
+                            [root.volumeIcon(), "sound"],
+                            [root.batteryIcon(), "battery"],
+                            ["󰒓", "settings"]
+                        ]
+                        delegate: Rectangle {
+                            required property var modelData
+                            width: 30; height: 30; color: verticalMouse.containsMouse ? theme.surface3 : "transparent"
+                            Text { anchors.centerIn: parent; text: modelData[0]; color: theme.text; font.family: theme.font; font.pixelSize: 15 }
+                            MouseArea {
+                                id: verticalMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    const action = modelData[1]
+                                    if (action === "weather") { if (!weatherProc.running) weatherProc.running = true }
+                                    else if (action === "battery") Quickshell.execDetached(["buchhwin-control-center"])
+                                    else Quickshell.execDetached(["buchhwin-" + action])
+                                }
+                            }
+                        }
+                    }
+                    Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        text: Qt.formatDateTime(clock.date, "HH\nmm")
+                        horizontalAlignment: Text.AlignHCenter
+                        color: theme.text; font.family: theme.font; font.bold: true; font.pixelSize: 10
                     }
                 }
             }

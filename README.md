@@ -263,6 +263,10 @@ the terminal's Fastfetch image independently of the wallpaper. The preview
 shows your selection; open a new terminal to see it in Fastfetch. Updates
 preserve this choice. Keep the selected image file at its saved location.
 
+The same Appearance page controls dwl-only theme presets, accent/background/
+bar/text colors, the shell Nerd Font and top/bottom/left/right bar position.
+These values are isolated from Plasma and do not modify KDE's theme or fonts.
+
 After changing a setting that affects the compositor, rebuild/install it with:
 
 ```bash

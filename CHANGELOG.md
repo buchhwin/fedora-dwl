@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Make manual `fastfetch` use the dwl profile and add the `ff` shortcut.
+- Add dwl-only theme presets, custom colors, Nerd Font selection and all four
+  bar positions; improve weather alignment/location naming and battery hover.
 - Add a Fastfetch image chooser and preview to Appearance settings, preserving
   the selected image when updating the installation.
 - Enable Zsh completion, persistent history, autosuggestions and syntax highlighting.

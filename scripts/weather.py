@@ -10,6 +10,7 @@ from pathlib import Path
 
 CACHE = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "buchhwin-dwl/weather.json"
 URL = "https://wttr.in/{location}?format=j1"
+REVERSE_URL = "https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=jsonv2&addressdetails=1"
 
 
 def icon_for(code: int, night: bool = False) -> tuple[str, str]:
@@ -28,7 +29,7 @@ def icon_for(code: int, night: bool = False) -> tuple[str, str]:
     return ("󰖐", "#bac2de")
 
 
-def geoclue_coordinates() -> tuple[float, float] | None:
+def geoclue_coordinates() -> tuple[float, float, float] | None:
     """Request a street-level fix from GeoClue; return quickly on denial."""
     try:
         import gi
@@ -48,7 +49,7 @@ def geoclue_coordinates() -> tuple[float, float] | None:
         client = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
                                        "org.freedesktop.GeoClue2", client_path,
                                        "org.freedesktop.GeoClue2.Client", None)
-        result = {"value": None}
+        result = {"value": None, "accuracy": float("inf")}
         loop = GLib.MainLoop()
         def changed(_proxy, _sender, signal, parameters):
             if signal != "LocationUpdated": return
@@ -56,9 +57,11 @@ def geoclue_coordinates() -> tuple[float, float] | None:
             location = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
                                               "org.freedesktop.GeoClue2", location_path,
                                               "org.freedesktop.GeoClue2.Location", None)
-            result["value"] = (location.get_cached_property("Latitude").unpack(),
-                               location.get_cached_property("Longitude").unpack())
-            loop.quit()
+            accuracy = location.get_cached_property("Accuracy").unpack()
+            if accuracy < result["accuracy"]:
+                result["accuracy"] = accuracy
+                result["value"] = (location.get_cached_property("Latitude").unpack(),
+                                   location.get_cached_property("Longitude").unpack(), accuracy)
         client.connect("g-signal", changed)
         GLib.timeout_add_seconds(6, lambda: (loop.quit(), False)[1])
         client.call_sync("Start", None, Gio.DBusCallFlags.NONE, 3000, None)
@@ -67,6 +70,21 @@ def geoclue_coordinates() -> tuple[float, float] | None:
         return result["value"]
     except Exception:
         return None
+
+
+def place_for(latitude: float, longitude: float, fallback: str) -> str:
+    """Resolve the detected coordinates to a municipality-sized place name."""
+    try:
+        request = urllib.request.Request(
+            REVERSE_URL.format(lat=latitude, lon=longitude),
+            headers={"User-Agent": "buchhwin-dwl-weather/1.1"})
+        with urllib.request.urlopen(request, timeout=6) as response:
+            address = json.load(response).get("address", {})
+        return (address.get("municipality") or address.get("city") or
+                address.get("town") or address.get("village") or
+                address.get("hamlet") or fallback)
+    except Exception:
+        return fallback
 
 
 def fetch() -> dict:
@@ -78,6 +96,8 @@ def fetch() -> dict:
     current = payload["current_condition"][0]
     area = payload.get("nearest_area", [{}])[0]
     place = (area.get("areaName") or [{"value": "Current location"}])[0]["value"]
+    if coordinates is not None:
+        place = place_for(coordinates[0], coordinates[1], place)
     code = int(current.get("weatherCode", 0))
     icon, icon_color = icon_for(code, current.get("weatherIconUrl", [{}])[0].get("value", "").find("night") >= 0)
     return {
@@ -87,7 +107,8 @@ def fetch() -> dict:
         "location": place,
         "icon": icon,
         "iconColor": icon_color,
-        "precise": coordinates is not None,
+        "precise": coordinates is not None and coordinates[2] <= 5000,
+        "accuracy": None if coordinates is None else round(coordinates[2]),
     }
 
 

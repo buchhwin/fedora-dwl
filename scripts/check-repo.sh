@@ -62,8 +62,14 @@ printf 'Checking required QML components...\n'
 for file in shell.qml Theme.qml AudioState.qml Bar.qml Launcher.qml ControlCenter.qml \
             NotificationService.qml NotificationCenter.qml NotificationPopups.qml \
             PowerMenu.qml Keybinds.qml ClipboardHistory.qml Settings.qml \
-            NetworkPanel.qml BluetoothPanel.qml AudioPanel.qml; do
+            NetworkPanel.qml BluetoothPanel.qml AudioPanel.qml AppearanceStyleSettings.qml; do
   [[ -s "config/quickshell/buchhwin/$file" ]] || { echo "Missing QML file: $file" >&2; exit 1; }
+done
+for key in font theme accent background bar text barPosition; do
+  grep -q "\"$key\"" scripts/appearancectl.py || {
+    echo "Appearance backend is missing the dwl-only setting: $key" >&2
+    exit 1
+  }
 done
 
 printf 'Checking the isolated Fedora installer...\n'
@@ -229,6 +235,10 @@ grep -q '^BROWSER=brave$' config/settings.env || {
 }
 grep -q 'MesloLGS Nerd Font Mono' config/alacritty.toml || {
   echo "Alacritty must use the bundled monospaced Nerd Font." >&2
+  exit 1
+}
+grep -q '^fastfetch()' config/zshrc && grep -q '^alias ff=fastfetch' config/zshrc || {
+  echo "The dwl Zsh profile must apply its Fastfetch config to fastfetch and ff." >&2
   exit 1
 }
 grep -q 'display_profile.py' install-fedora.sh || {

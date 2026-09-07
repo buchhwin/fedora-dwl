@@ -2,6 +2,12 @@
 # It deliberately does not source the account's personal dotfiles.
 export PATH="$HOME/.local/bin:$PATH"
 
+# Use the dedicated dwl configuration for manual calls too.
+fastfetch() {
+  command fastfetch --config "$HOME/.config/buchhwin-dwl/fastfetch.jsonc" "$@"
+}
+alias ff=fastfetch
+
 if [[ -o interactive ]]; then
   # Keep history and completion state inside the dedicated shell profile.
   HISTFILE="${ZDOTDIR:-$HOME/.config/buchhwin-dwl/zsh}/.zsh_history"
@@ -15,8 +21,7 @@ if [[ -o interactive ]]; then
   zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
   bindkey '^I' expand-or-complete
 
-  command -v fastfetch >/dev/null 2>&1 \
-    && fastfetch --config "$HOME/.config/buchhwin-dwl/fastfetch.jsonc"
+  command -v fastfetch >/dev/null 2>&1 && fastfetch
   command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 
   [[ -r /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] \
