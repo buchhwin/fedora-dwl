@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Stop installing Brave and Visual Studio Code as Flatpaks; OnlyOffice remains.
 - Fixed Fedora KDE 6 polkit agent discovery in the session and doctor.
 - Fixed the KWallet Manager settings action to use Fedora's executable name.
 - Recognize the Brave Flatpak in the doctor and launch it for `BROWSER=brave`.

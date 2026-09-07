@@ -80,12 +80,11 @@ if ! fc-list 2>/dev/null | grep -qi "MesloLGS Nerd Font"; then
   rm -rf "$font_tmp"
 fi
 
-# Keep third-party GUI applications reproducible without adding RPM
-# repositories to Fedora. They are account-local Flatpaks and contain no user
-# profiles or application data.
+# Install OnlyOffice as a user-local Flatpak without adding RPM repositories.
+# Brave and Visual Studio Code are managed separately by the user.
 if (( ! PREPARE_ONLY )); then
   flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-  flatpak install --user -y flathub com.brave.Browser com.visualstudio.code org.onlyoffice.desktopeditors
+  flatpak install --user -y flathub org.onlyoffice.desktopeditors
   # Default applications are user-wide, including Plasma. Leave the user's
   # choices intact; session shortcuts launch the bundled applications directly.
 fi

@@ -205,12 +205,14 @@ grep -q 'nerd-fonts/releases' install-fedora.sh || {
   echo "Installer must fetch the Nerd Font; the bar is glyph-based." >&2
   exit 1
 }
-grep -q 'com.brave.Browser' install-fedora.sh \
-  && grep -q 'com.visualstudio.code' install-fedora.sh \
-  && grep -q 'org.onlyoffice.desktopeditors' install-fedora.sh || {
-  echo "Installer must provision the complete Flatpak application set." >&2
+grep -q 'flatpak install --user -y flathub org.onlyoffice.desktopeditors' install-fedora.sh || {
+  echo "Installer must provision OnlyOffice as a user-local Flatpak." >&2
   exit 1
 }
+if grep -Eq 'flatpak install.*(com.brave.Browser|com.visualstudio.code)' install-fedora.sh; then
+  echo "Installer must not install Brave or Visual Studio Code as Flatpaks." >&2
+  exit 1
+fi
 if grep -Eq '^[[:space:]]*xdg-(mime[[:space:]]+default|settings[[:space:]]+set)' install-fedora.sh; then
   echo "Installer must preserve Plasma's default applications." >&2
   exit 1

@@ -115,8 +115,9 @@ and `/usr/local/bin/dwl` paths are not replaced.
 
 The installer also installs Dolphin, Okular, Gwenview, Kate, VLC, Merkuro,
 KWallet and the KDE account/calendar infrastructure, plus
-Fastfetch, Kitty, Starship, Brave, Visual Studio Code and OnlyOffice. The last
-three are installed from Flathub, avoiding additional Fedora RPM repositories.
+Fastfetch, Kitty, Starship and OnlyOffice. OnlyOffice is installed from Flathub.
+Install Brave and Visual Studio Code separately if you want to use their
+dedicated shortcuts; the installer does not install either application.
 
 After installation, log out. In SDDM select:
 
@@ -241,8 +242,8 @@ KEYBOARD_LAYOUT=de
 LOAD_ZSH_CONFIG=1
 ```
 
-`BROWSER=brave` selects Brave. The helper also supports the installed Flathub
-desktop entry and falls back to other available browsers.
+`BROWSER=brave` selects a separately installed Brave. The helper supports both
+native and Flatpak installations and falls back to other available browsers.
 
 `WALLPAPER` accepts an absolute image path or a path beginning with `$HOME`.
 When that image cannot be read, `WALLPAPER_COLOR` is used instead. Run the
