@@ -213,8 +213,8 @@ PanelWindow {
                 Text { visible: root.eventsForDay(root.selectedDay).length === 0; text: root.status || "No appointments"; color: theme.subtext; font.family: theme.font; font.pixelSize: 10 }
                 Rectangle {
                     Layout.fillWidth: true; height: 34; radius: 8; color: openCalendarMouse.containsMouse ? theme.surface3 : theme.surface2
-                    Text { anchors.centerIn: parent; text: "Open GNOME Calendar"; color: theme.text; font.family: theme.font; font.pixelSize: 10 }
-                    MouseArea { id: openCalendarMouse; anchors.fill: parent; hoverEnabled: true; onClicked: { root.opened = false; Quickshell.execDetached(["gnome-calendar"]) } }
+                    Text { anchors.centerIn: parent; text: "Open Merkuro"; color: theme.text; font.family: theme.font; font.pixelSize: 10 }
+                    MouseArea { id: openCalendarMouse; anchors.fill: parent; hoverEnabled: true; onClicked: { root.opened = false; Quickshell.execDetached(["merkuro-calendar"]) } }
                 }
             }
         }

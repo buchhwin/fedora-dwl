@@ -28,12 +28,16 @@ esac
 packages=(
   git python3 procps-ng dbus-tools curl unzip fontconfig zsh flatpak fastfetch
   quickshell kitty alacritty xorg-x11-server-Xwayland NetworkManager bluez
-  pipewire wireplumber pulseaudio-utils playerctl brightnessctl upower lxpolkit
+  pipewire wireplumber pulseaudio-utils playerctl brightnessctl upower
   swaybg swaylock grim slurp swappy wl-clipboard wlr-randr wdisplays
-  cliphist udiskie udisks2 gvfs gvfs-mtp gnome-keyring libnotify
-  xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk
-  nautilus seahorse gnome-calculator gnome-text-editor gnome-calendar
-  gnome-online-accounts evolution-data-server loupe papers showtime decibels zenity
+  cliphist udiskie udisks2 gvfs gvfs-mtp libnotify
+  xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-kde
+  plasma-desktop plasma-workspace sddm qt6-qtwayland breeze-gtk
+  dolphin okular gwenview kate kcalc vlc merkuro akonadi akonadi-server
+  kdepim-runtime akonadi-calendar-tools kaccounts-integration-qt6 kaccounts-providers
+  plasma-systemsettings
+  signon-kwallet-extension kwalletmanager polkit-kde kio-fuse kio-gdrive
+  plasma-nm bluedevil plasma-pa powerdevil zenity
   geoclue2 geoclue2-demos
   gcc make meson ninja-build pkgconf-pkg-config wlroots-devel wayland-devel
   wayland-protocols-devel libinput-devel libxkbcommon-devel
@@ -64,7 +68,7 @@ mkdir -p "$CONFIG_HOME/quickshell" "$CONFIG_HOME/buchhwin-dwl/wallpapers" \
   "$CONFIG_HOME/xdg-desktop-portal" "$CONFIG_HOME/systemd/user" "$BIN_HOME" "$BACKUP_DIR"
 
 # User-local font installation makes the glyph font available to the isolated
-# Quickshell and Alacritty profiles without changing GNOME's selected fonts.
+# Quickshell and terminal profiles without changing Plasma's selected fonts.
 FONT_HOME="$DATA_HOME/fonts/MesloLGS"
 if ! fc-list 2>/dev/null | grep -qi "MesloLGS Nerd Font"; then
   font_tmp="$(mktemp -d)"
@@ -83,15 +87,18 @@ if (( ! PREPARE_ONLY )); then
   flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
   flatpak install --user -y flathub com.brave.Browser com.visualstudio.code org.onlyoffice.desktopeditors
   xdg-settings set default-web-browser com.brave.Browser.desktop || true
-  # Keep local documents in the lightweight GNOME applications. In
-  # particular, browsers and office suites must not take over PDF files.
-  xdg-mime default org.gnome.Papers.desktop application/pdf
-  xdg-mime default org.gnome.Loupe.desktop image/jpeg
-  xdg-mime default org.gnome.Loupe.desktop image/png
-  xdg-mime default org.gnome.TextEditor.desktop text/plain
-  xdg-mime default org.gnome.Showtime.desktop video/mp4
-  xdg-mime default org.gnome.Decibels.desktop audio/mpeg
-  xdg-mime default org.gnome.Nautilus.desktop inode/directory
+  # KDE applications are the desktop defaults. VLC intentionally owns both
+  # audio and video while browsers and office suites do not take over PDFs.
+  xdg-mime default org.kde.okular.desktop application/pdf
+  xdg-mime default org.kde.gwenview.desktop image/jpeg
+  xdg-mime default org.kde.gwenview.desktop image/png
+  xdg-mime default org.kde.kate.desktop text/plain
+  xdg-mime default vlc.desktop video/mp4
+  xdg-mime default vlc.desktop video/x-matroska
+  xdg-mime default vlc.desktop audio/mpeg
+  xdg-mime default vlc.desktop audio/flac
+  xdg-mime default org.kde.dolphin.desktop inode/directory
+  xdg-mime default org.kde.merkuro.calendar.desktop text/calendar
 fi
 
 # Starship is not shipped by Fedora. Install a pinned standalone binary into
@@ -126,7 +133,7 @@ backup "/usr/local/bin/buchhwin-session"
 backup "/usr/share/wayland-sessions/buchhwin.desktop"
 
 # Replace only the dedicated buchhwin paths. Existing ~/.config/quickshell/dwl
-# and every GNOME setting remain untouched.
+# and every Plasma setting remain untouched.
 if [[ -d "$CONFIG_HOME/quickshell/buchhwin" ]]; then
   mv "$CONFIG_HOME/quickshell/buchhwin" "$BACKUP_DIR/quickshell-buchhwin.previous"
 fi
@@ -164,7 +171,7 @@ BUILD_DIR="$DATA_HOME/buchhwin-dwl/build/dwl-scenefx-port"
 mkdir -p "$USER_HOME/Pictures/Screenshots"
 if (( PREPARE_ONLY )); then
   echo "Fedora user preparation complete. Backups: $BACKUP_DIR"
-  echo "Run ./install-fedora.sh later to install missing packages and the GDM session."
+  echo "Run ./install-fedora.sh later to install missing packages and the SDDM session."
   exit 0
 fi
 
@@ -175,4 +182,4 @@ sudo install -Dm644 "$ROOT/session/buchhwin.desktop" /usr/share/wayland-sessions
 sudo systemctl enable --now NetworkManager.service
 sudo systemctl enable --now bluetooth.service || true
 echo "Fedora installation complete. Backups: $BACKUP_DIR"
-echo "Select the separate 'buchhwin' session in GDM; GNOME and dwl remain installed."
+echo "Select the separate 'buchhwin' session in SDDM; Plasma remains available as the fallback desktop."

@@ -31,7 +31,7 @@ PanelWindow {
         ["SUPER + ENTER", "Terminal"],
         ["SUPER + D", "Application launcher"],
         ["SUPER + B", "Brave browser"],
-        ["SUPER + E", "Files (Nautilus)"],
+        ["SUPER + E", "Files (Dolphin)"],
         ["SUPER + C", "Visual Studio Code"],
         ["SUPER + SHIFT + C", "Control Center"],
         ["SUPER + S", "Region screenshot"],

@@ -1,47 +1,54 @@
 #!/usr/bin/env python3
-"""Read GNOME/Evolution calendar events through Shell CalendarServer."""
+"""Read events from KDE's Akonadi calendar store via KonsoleKalendar."""
 from __future__ import annotations
 
+import csv
+import datetime as dt
 import json
+import os
+import subprocess
 import sys
-import time
 
-import gi
 
-gi.require_version("Gio", "2.0")
-from gi.repository import Gio, GLib  # noqa: E402
+def parse_date(value: str, value_time: str) -> int:
+    parsed = dt.datetime.strptime(value.strip(), "%A, %B %d, %Y")
+    if value_time.strip() and value_time.strip().lower() != "float":
+        hour, minute = map(int, value_time.split(":"))
+        parsed = parsed.replace(hour=hour, minute=minute)
+    return int(parsed.astimezone().timestamp())
 
 
 def main() -> int:
     if len(sys.argv) != 3:
         print("[]")
         return 2
-    since, until = int(sys.argv[1]), int(sys.argv[2])
-    events: dict[str, dict] = {}
-    loop = GLib.MainLoop()
-    proxy = Gio.DBusProxy.new_for_bus_sync(
-        Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
-        "org.gnome.Shell.CalendarServer",
-        "/org/gnome/Shell/CalendarServer",
-        "org.gnome.Shell.CalendarServer", None)
-
-    def signal(_proxy, _sender, name, parameters):
-        if name != "EventsAddedOrUpdated":
-            return
-        for event_id, summary, start, end, extras in parameters.unpack()[0]:
-            events[event_id] = {
-                "id": event_id, "summary": summary or "Untitled event",
-                "start": start, "end": end,
-                "allDay": bool(extras.get("all-day", False)),
-                "color": str(extras.get("color", "")),
-            }
-
-    proxy.connect("g-signal", signal)
-    proxy.call_sync("SetTimeRange", GLib.Variant("(xxb)", (since, until, True)),
-                    Gio.DBusCallFlags.NONE, 5000, None)
-    GLib.timeout_add(1800, lambda: (loop.quit(), GLib.SOURCE_REMOVE)[1])
-    loop.run()
-    print(json.dumps(sorted(events.values(), key=lambda item: item["start"]), ensure_ascii=False))
+    since, until = map(int, sys.argv[1:])
+    start = dt.datetime.fromtimestamp(since).strftime("%Y-%m-%d")
+    end = dt.datetime.fromtimestamp(until - 1).strftime("%Y-%m-%d")
+    env = os.environ.copy()
+    env["LC_ALL"] = "C"
+    proc = subprocess.run(
+        ["konsolekalendar", "--allow-gui", "--view", "--date", start,
+         "--end-date", end, "--time", "00:00", "--end-time", "23:59",
+         "--export-type", "CSV"], text=True, capture_output=True, env=env)
+    if proc.returncode:
+        print(proc.stderr.strip(), file=sys.stderr)
+        print("[]")
+        return proc.returncode
+    events = []
+    for row in csv.reader(proc.stdout.splitlines()):
+        if len(row) < 8:
+            continue
+        try:
+            event_start = parse_date(row[0], row[1])
+            event_end = parse_date(row[2], row[3])
+        except ValueError:
+            continue
+        all_day = not row[1].strip() or row[1].strip().lower() == "float"
+        events.append({"id": row[7], "summary": row[4] or "Untitled event",
+                       "start": event_start, "end": event_end,
+                       "allDay": all_day, "color": ""})
+    print(json.dumps(sorted(events, key=lambda event: event["start"]), ensure_ascii=False))
     return 0
 
 

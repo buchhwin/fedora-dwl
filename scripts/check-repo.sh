@@ -68,8 +68,10 @@ done
 
 printf 'Checking the isolated Fedora installer...\n'
 for dependency in quickshell wlroots-devel xorg-x11-server-Xwayland scenefx \
-                  xdg-desktop-portal-wlr wdisplays cliphist lxpolkit \
-                  nautilus seahorse gnome-calculator gnome-calendar zenity zsh flatpak \
+                  xdg-desktop-portal-wlr xdg-desktop-portal-kde wdisplays cliphist polkit-kde \
+                  plasma-desktop dolphin okular gwenview kate vlc merkuro \
+                  akonadi-calendar-tools kaccounts-integration-qt6 kaccounts-providers \
+                  kwalletmanager plasma-systemsettings zenity zsh flatpak \
                   fastfetch meson ninja-build libdrm-devel pixman-devel lcms2-devel; do
   grep -qw "$dependency" install-fedora.sh || {
     echo "Fedora installer is missing: $dependency" >&2
@@ -209,8 +211,13 @@ grep -q 'com.brave.Browser' install-fedora.sh \
   echo "Installer must provision the complete Flatpak application set." >&2
   exit 1
 }
-grep -q 'org.gnome.Papers.desktop application/pdf' install-fedora.sh || {
-  echo "PDF files must default to GNOME Papers instead of the browser or office suite." >&2
+grep -q 'org.kde.okular.desktop application/pdf' install-fedora.sh || {
+  echo "PDF files must default to Okular instead of the browser or office suite." >&2
+  exit 1
+}
+grep -q 'vlc.desktop video/mp4' install-fedora.sh \
+  && grep -q 'vlc.desktop audio/mpeg' install-fedora.sh || {
+  echo "VLC must be the default audio and video player." >&2
   exit 1
 }
 grep -q '^BROWSER=brave$' config/settings.env || {
@@ -229,8 +236,8 @@ grep -q 'XDG_CONFIG_HOME' bin/buchhwin-session || {
   echo "Session launcher must honor XDG_CONFIG_HOME." >&2
   exit 1
 }
-grep -q 'ADW_DEBUG_COLOR_SCHEME=prefer-dark' bin/buchhwin-session || {
-  echo "The isolated dwl session must request dark libadwaita applications." >&2
+grep -q 'GTK_THEME=Breeze-Dark' bin/buchhwin-session || {
+  echo "The isolated dwl session must request the KDE Breeze GTK theme." >&2
   exit 1
 }
 
@@ -298,7 +305,7 @@ grep -q 'WLR_MODIFIER_LOGO' "$tmp/config.h"
 grep -q 'accel_profile = LIBINPUT_CONFIG_ACCEL_PROFILE_FLAT' "$tmp/config.h"
 grep -q 'buchhwin-launcher' "$tmp/config.h"
 grep -q 'buchhwin-terminal' "$tmp/config.h"
-grep -q 'nautilus' "$tmp/config.h"
+grep -q 'dolphin' "$tmp/config.h"
 grep -q 'XKB_KEY_b' "$tmp/config.h"
 grep -q 'XKB_KEY_Left.*setmfact' "$tmp/config.h"
 grep -q 'XKB_KEY_Right.*setmfact' "$tmp/config.h"
@@ -330,8 +337,8 @@ grep -q 'def supervise' scripts/session.py || {
   echo "session.py must supervise Quickshell so a crash does not blank the shell." >&2
   exit 1
 }
-grep -q 'policykit-1-gnome' scripts/session.py || {
-  echo "session.py must know the GNOME polkit agent path." >&2
+grep -q 'polkit-kde-authentication-agent-1' scripts/session.py || {
+  echo "session.py must know the KDE polkit agent path." >&2
   exit 1
 }
 

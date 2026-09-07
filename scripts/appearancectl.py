@@ -43,7 +43,7 @@ def packs(kind: str) -> list[str]:
 
 
 def state() -> dict:
-    value = {"icons": "Adwaita", "cursor": "Adwaita", "cursorSize": 24,
+    value = {"icons": "breeze-dark", "cursor": "breeze_cursors", "cursorSize": 24,
              "gaps": 8, "border": 1}
     if settings.exists():
         value.update(json.loads(settings.read_text()))

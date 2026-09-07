@@ -122,7 +122,7 @@ replace_once(r'^static const char \*menucmd\[\]\s*=\s*\{[^;]*\};',
 anchor = 'static const char *menucmd[] = { "buchhwin-launcher", NULL };'
 commands = anchor + '''
 static const char *browsercmd[]       = { "buchhwin-browser", NULL };
-static const char *filescmd[]         = { "nautilus", NULL };
+static const char *filescmd[]         = { "dolphin", NULL };
 static const char *controlcmd[]       = { "buchhwin-control-center", NULL };
 static const char *codecmd[]          = { "buchhwin-code", NULL };
 static const char *notificationscmd[] = { "buchhwin-notifications", NULL };

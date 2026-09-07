@@ -8,7 +8,7 @@ import QtQuick.Layouts
 //
 // Enterprise networks (eduroam and friends) are deliberately not editable
 // here: creating an 802.1X profile needs certificate and identity handling
-// that belongs in a full editor. Such profiles are created once in the GNOME
+// that belongs in a full editor. Such profiles are created once in Plasma's
 // session and then appear below under "Saved connections", where bringing
 // them up is a single click.
 PanelWindow {
@@ -398,7 +398,7 @@ PanelWindow {
             Text {
                 font.family: theme.font
                 Layout.fillWidth: true
-                text: "Enterprise networks such as eduroam are set up once in the GNOME session and appear above under saved connections."
+                text: "Enterprise networks such as eduroam are set up once in the Plasma session and appear above under saved connections."
                 color: theme.subtext
                 wrapMode: Text.WordWrap
                 font.pixelSize: 9

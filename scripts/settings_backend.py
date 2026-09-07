@@ -100,7 +100,7 @@ def applications() -> list[dict]:
         if len(fields) >= 2:
             apps.append({"id": fields[0], "name": fields[1], "source": "Flatpak",
                          "origin": fields[2] if len(fields) > 2 else ""})
-    protected = {"gnome-shell", "gnome-control-center", "nautilus", "quickshell", "systemd", "NetworkManager"}
+    protected = {"plasma-desktop", "plasma-workspace", "dolphin", "quickshell", "systemd", "NetworkManager"}
     seen = set()
     for desktop in Path("/usr/share/applications").glob("*.desktop"):
         try:
@@ -112,7 +112,7 @@ def applications() -> list[dict]:
             if query.returncode or not package or package in seen: continue
             seen.add(package)
             apps.append({"id": package, "name": name, "source": "RPM", "origin": "Fedora",
-                         "protected": package in protected or package.startswith(("gnome-shell", "gnome-session", "systemd", "NetworkManager", "dwl", "quickshell"))})
+                         "protected": package in protected or package.startswith(("plasma-", "systemd", "NetworkManager", "dwl", "quickshell", "akonadi"))})
         except Exception: continue
     return sorted(apps, key=lambda app: app["name"].lower())
 

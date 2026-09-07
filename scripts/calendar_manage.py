@@ -1,47 +1,52 @@
 #!/usr/bin/env python3
-"""Create and modify events in GNOME Evolution Data Server calendars."""
+"""Create and modify events in KDE's Akonadi calendar store."""
 from __future__ import annotations
 
+import datetime as dt
 import json
+import os
+import re
+import subprocess
 import sys
-import uuid
-
-import gi
-
-gi.require_version("ECal", "2.0")
-gi.require_version("EDataServer", "1.2")
-gi.require_version("ICalGLib", "3.0")
-from gi.repository import ECal, EDataServer, ICalGLib  # noqa: E402
 
 
-registry = EDataServer.SourceRegistry.new_sync(None)
-
-
-def connect(uid: str):
-    source = registry.ref_source(uid)
-    if source is None:
-        raise RuntimeError("Calendar source no longer exists")
-    return ECal.Client.connect_sync(source, ECal.ClientSourceType.EVENTS, 10, None)
+def run(arguments: list[str]) -> subprocess.CompletedProcess[str]:
+    env = os.environ.copy()
+    env["LC_ALL"] = "C"
+    return subprocess.run(["konsolekalendar", "--allow-gui", *arguments],
+                          text=True, capture_output=True, env=env)
 
 
 def calendars() -> list[dict]:
+    proc = run(["--list-calendars"])
+    if proc.returncode:
+        raise RuntimeError(proc.stderr.strip() or "Could not list Akonadi calendars")
     result = []
-    for source in registry.list_enabled(EDataServer.SOURCE_EXTENSION_CALENDAR):
-        try:
-            client = connect(source.get_uid())
-            if client.is_readonly():
-                continue
-            parent = registry.ref_source(source.get_parent()) if source.get_parent() else None
-            online = bool(parent and parent.has_extension(EDataServer.SOURCE_EXTENSION_GOA))
-            result.append({"uid": source.get_uid(), "name": source.get_display_name(), "online": online})
-        except Exception:
+    # KDE releases vary the decoration around these two fields, so accept
+    # either "Calendar 8: Personal" or the simpler "8 - Personal" form.
+    for line in proc.stdout.splitlines():
+        if "(Read only)" in line:
             continue
-    result.sort(key=lambda item: (not item["online"], item["name"].lower()))
+        match = re.search(r"(?:Calendar\s*)?(\d+)\s*[:\-]\s*(.+)", line, re.I)
+        if match:
+            result.append({"uid": match.group(1), "name": match.group(2).strip(), "online": True})
+    if not result:
+        result.append({"uid": "", "name": "Default calendar", "online": True})
     return result
 
 
-def caltime(timestamp: int):
-    return ICalGLib.Time.new_from_timet_with_zone(timestamp, False, ICalGLib.Timezone.get_utc_timezone())
+def event_arguments(summary: str, start: str, end: str) -> list[str]:
+    begin = dt.datetime.fromtimestamp(int(start))
+    finish = dt.datetime.fromtimestamp(int(end))
+    return ["--date", begin.strftime("%Y-%m-%d"), "--time", begin.strftime("%H:%M"),
+            "--end-date", finish.strftime("%Y-%m-%d"), "--end-time", finish.strftime("%H:%M"),
+            "--summary", summary]
+
+
+def checked(arguments: list[str]) -> None:
+    proc = run(arguments)
+    if proc.returncode:
+        raise RuntimeError(proc.stderr.strip() or proc.stdout.strip() or "Calendar operation failed")
 
 
 def main() -> int:
@@ -49,35 +54,15 @@ def main() -> int:
         print(json.dumps(calendars(), ensure_ascii=False))
         return 0
     if len(sys.argv) == 6 and sys.argv[1] == "create":
-        _, _, source_uid, summary, start, end = sys.argv
-        component = ICalGLib.Component.new_vcalendar()
-        event = ICalGLib.Component.new_vevent()
-        event.set_uid(str(uuid.uuid4()))
-        event.set_summary(summary)
-        event.set_dtstart(caltime(int(start)))
-        event.set_dtend(caltime(int(end)))
-        component.add_component(event)
-        ok, uid = connect(source_uid).create_object_sync(event, ECal.OperationFlags.NONE, None)
-        if not ok:
-            raise RuntimeError("Event could not be created")
-        print(uid)
+        _, _, calendar_id, summary, start, end = sys.argv
+        arguments = ["--add"]
+        if calendar_id:
+            arguments += ["--calendar", calendar_id]
+        checked(arguments + event_arguments(summary, start, end))
         return 0
     if len(sys.argv) == 6 and sys.argv[1] == "update":
-        _, _, event_id, summary, start, end = sys.argv
-        parts = event_id.split("\n", 2)
-        if len(parts) < 2:
-            raise RuntimeError("Invalid event identifier")
-        source_uid, uid = parts[0], parts[1]
-        rid = parts[2] if len(parts) > 2 and parts[2] else None
-        client = connect(source_uid)
-        ok, event = client.get_object_sync(uid, rid, None)
-        if not ok:
-            raise RuntimeError("Event could not be loaded")
-        event.set_summary(summary)
-        event.set_dtstart(caltime(int(start)))
-        event.set_dtend(caltime(int(end)))
-        if not client.modify_object_sync(event, ECal.ObjModType.THIS, ECal.OperationFlags.NONE, None):
-            raise RuntimeError("Event could not be updated")
+        _, _, uid, summary, start, end = sys.argv
+        checked(["--change", "--uid", uid] + event_arguments(summary, start, end))
         return 0
     print("usage: calendar_manage.py calendars|create|update ...", file=sys.stderr)
     return 2

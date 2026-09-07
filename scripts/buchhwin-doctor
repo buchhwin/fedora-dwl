@@ -8,7 +8,7 @@ info(){ printf '\033[36m[INFO]\033[0m %s\n' "$*"; }
 commands=(
   dwl-buchhwin qs zsh python3
   kitty buchhwin-terminal buchhwin-audioctl buchhwin-btctl
-  nautilus wlr-randr wdisplays cliphist
+  dolphin okular gwenview kate vlc wlr-randr wdisplays cliphist
   nmcli bluetoothctl wpctl pactl
   brightnessctl playerctl
   grim slurp swappy wl-copy notify-send swaybg udiskie
@@ -45,14 +45,13 @@ fi
 # A missing polkit agent is invisible until something needs authentication.
 polkit_found=""
 for candidate in \
-  /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 \
-  /usr/bin/lxpolkit \
-  /usr/libexec/polkit-gnome-authentication-agent-1 \
-  /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1; do
+  /usr/libexec/polkit-kde-authentication-agent-1 \
+  /usr/lib/polkit-kde-authentication-agent-1 \
+  /usr/bin/lxpolkit; do
   [[ -x "$candidate" ]] && { polkit_found="$candidate"; break; }
 done
 [[ -n "$polkit_found" ]] && good "polkit agent -> $polkit_found" \
-  || fail "no polkit agent found (install lxpolkit/policykit-1-gnome)"
+  || fail "no polkit agent found (install polkit-kde)"
 
 [[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/buchhwin/shell.qml" ]] && good "Quickshell config installed" || fail "Quickshell config missing"
 [[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/buchhwin-dwl/session.py" ]] && good "dwl status bridge installed" || fail "dwl status bridge missing"
@@ -61,10 +60,10 @@ done
 systemctl is-active --quiet NetworkManager.service 2>/dev/null && good "NetworkManager active" || fail "NetworkManager not active"
 systemctl is-active --quiet bluetooth.service 2>/dev/null && good "Bluetooth service active" || info "Bluetooth inactive (fine if unused)"
 
-# A GNOME session must stay available as the fallback desktop.
-[[ -f /usr/share/wayland-sessions/gnome.desktop || -f /usr/share/xsessions/gnome.desktop ]] \
-  && good "GNOME fallback session available" \
-  || info "No GNOME session found; dwl would be the only desktop"
+# Plasma remains the supported fallback desktop.
+[[ -f /usr/share/wayland-sessions/plasma.desktop ]] \
+  && good "Plasma fallback session available" \
+  || fail "Plasma Wayland session missing"
 
 printf '\n%d checks passed, %d failed.\n' "$ok" "$bad"
 (( bad == 0 ))

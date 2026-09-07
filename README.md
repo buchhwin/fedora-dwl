@@ -1,6 +1,6 @@
 # Fedora dwl Desktop
 
-A complete, keyboard-first Wayland desktop for **Fedora 44 with GNOME 50**.
+A complete, keyboard-first Wayland desktop for **Fedora 44 KDE Plasma**.
 It is built from two main pieces:
 
 - **dwl** handles the compositor, tiling, tags, focus and window rules.
@@ -10,13 +10,13 @@ The project is designed around a compact dwm-style workflow while keeping the de
 
 The shell configures the desktop itself. There is no `blueman`, no `pavucontrol`
 and no `nm-connection-editor` — Wi-Fi, Bluetooth and audio are managed in
-Quickshell's own panels. Everything else comes from what Fedora and GNOME
+Quickshell's own panels. Everything else comes from what Fedora and KDE
 already ship.
 
-> GNOME is a requirement, not something this repository replaces. The
-> installer adds a separate **buchhwin** session to GDM while keeping GNOME as
-> the fallback desktop. GNOME accounts, NetworkManager, keyring, applications
-> and system services provide the foundation.
+> KDE Plasma is the required foundation. The installer adds a separate
+> **buchhwin** session to SDDM while keeping Plasma as the fallback desktop.
+> KAccounts/Akonadi, KWallet, NetworkManager and KDE applications provide the
+> desktop infrastructure; dwl and Quickshell provide the visible session.
 
 ## Features
 
@@ -51,14 +51,14 @@ already ship.
 - bundled dark grayscale wallpaper with a solid-color fallback
 - lock/suspend/logout/reboot/shutdown menu
 - on-screen keybind viewer
-- GDM Wayland session entry alongside GNOME
+- SDDM Wayland session entry alongside Plasma
 - XDG desktop portal configuration for wlroots
 - installer, updater, uninstaller and doctor script
 - GitHub Actions repository checks
 
 ## Requirements
 
-- Fedora 44 with GNOME 50 installed as the fallback session
+- Fedora 44 KDE Plasma installed as the fallback session
 - Intel or AMD graphics — no NVIDIA-specific handling is included
 - an internet connection during installation
 - a normal user account with `sudo` access
@@ -70,41 +70,44 @@ already ship.
 Clone this repository and enter it:
 
 ```bash
-git clone https://github.com/buchhwin/fedora-dwl.git
+git clone --branch kde-base https://github.com/buchhwin/fedora-dwl.git
 cd fedora-dwl
 ```
 
 The installer uses Fedora's Quickshell and wlroots packages. It downloads
 pinned dwl and SceneFX sources into a private user directory, builds
-`dwl-buchhwin`, installs every required helper and adds a separate GDM session.
+`dwl-buchhwin`, installs every required helper and adds a separate SDDM session.
 No existing dwl checkout is required. Preview packages and destinations first:
 
 ```bash
 ./install-fedora.sh --dry-run
 ```
 
-After reviewing the plan, install the separate **buchhwin** GDM session with:
+After reviewing the plan, install the separate **buchhwin** SDDM session with:
 
 ```bash
 ./install-fedora.sh
 ```
 
-GNOME, its fonts and its settings are not changed. MesloLGS Nerd Font is
+Plasma, its fonts and its settings are not changed. MesloLGS Nerd Font is
 installed in the user's font directory and selected only by the dedicated
 Quickshell, Kitty and terminal configurations. Existing `~/.config/quickshell/dwl`
 and `/usr/local/bin/dwl` paths are not replaced.
 
-The installer also installs the GNOME applications used by the desktop,
+The installer also installs Dolphin, Okular, Gwenview, Kate, VLC, Merkuro,
+KWallet and the KDE account/calendar infrastructure, plus
 Fastfetch, Kitty, Starship, Brave, Visual Studio Code and OnlyOffice. The last
 three are installed from Flathub, avoiding additional Fedora RPM repositories.
 
-After installation, log out. In GDM select:
-
-In GDM select:
+After installation, log out. In SDDM select:
 
 ```text
 buchhwin
 ```
+
+This branch is intended for a Fedora KDE installation. Do not run it as an
+in-place GNOME-to-KDE conversion. The preserved `gnome-final` tag remains the
+recovery point for the previous GNOME-based installer.
 
 Then verify the installation with:
 
@@ -113,16 +116,24 @@ buchhwin-doctor
 ```
 
 The doctor verifies the compositor, SceneFX/wlroots runtime, XWayland support,
-the Nerd Font, the polkit agent and that a GNOME fallback session still exists.
+the Nerd Font, the KDE polkit agent and that a Plasma fallback session exists.
 
 ## What is not copied
 
 The repository contains desktop code and neutral defaults only. It does not
 contain or copy passwords, keyrings, browser profiles, SSH/GPG keys, Wi-Fi
-credentials, GNOME Online Accounts, calendar contents, clipboard history,
+credentials, KDE Online Accounts, KWallet data, calendar contents, clipboard history,
 display profiles, personal wallpapers, documents or shell history. Sign into
 your accounts and select machine-specific display/wallpaper settings after a
 fresh installation.
+
+## KDE accounts and calendars
+
+Open **Settings → Hardware → Online accounts** to add Google and other cloud
+accounts through KDE. Open Merkuro once to select or add its Akonadi calendar
+resources. The calendar popup in the top bar reads and edits those same
+calendars through KDE's `konsolekalendar`; it does not keep a second calendar
+database. Dolphin accesses Google Drive through KDE's `kio-gdrive` integration.
 
 ## Main keybindings
 
@@ -131,7 +142,7 @@ fresh installation.
 | `Super + Enter` | Terminal (Kitty) |
 | `Super + D` | Application launcher |
 | `Super + B` | Brave browser |
-| `Super + E` | Files (Nautilus) |
+| `Super + E` | Files (Dolphin) |
 | `Super + C` | Visual Studio Code |
 | `Super + Shift + C` | Control Center |
 | `Super + S` | Region screenshot |
@@ -188,7 +199,7 @@ Both lead into panels the shell implements itself:
 
 **Enterprise Wi-Fi (eduroam and similar)** is the one deliberate exception.
 Creating an 802.1X profile needs certificate and identity handling that belongs
-in a full editor, so create it once in the GNOME session. NetworkManager stores
+in a full editor, so create it once in the Plasma session. NetworkManager stores
 it system-wide, and it then appears under *Saved connections* in the Wi-Fi
 panel, one click from connecting.
 
@@ -222,7 +233,7 @@ update installer after changing repository defaults; personal values in
 Kitty is launched with buchhwin's separate configuration at
 `~/.config/buchhwin-dwl/kitty.conf`. This gives the dwl session its gray
 theme, transparency and MesloLGS Nerd Font Mono without modifying `~/.config/kitty` or
-GNOME's terminal and font settings.
+Plasma's terminal and font settings.
 
 The session uses a dedicated Zsh configuration in
 `~/.config/buchhwin-dwl/zsh`. Personal shell files and secrets are not loaded.
@@ -347,7 +358,7 @@ the command to run by hand.
 ## Current limitations
 
 - The tag pills in the Quickshell bar are status indicators. Switch tags with the native dwl shortcuts (`Super + 1..9`). This intentionally avoids carrying a stale compositor IPC patch just for mouse clicks.
-- Enterprise (802.1X) Wi-Fi profiles are created in GNOME, not in the shell.
+- Enterprise (802.1X) Wi-Fi profiles are created in Plasma, not in the shell.
 - The repository is statically checked in CI, but a real Wayland session still has to be tested on the target machine because GPU/input/display behavior cannot be reproduced in GitHub Actions.
 
 ## Update

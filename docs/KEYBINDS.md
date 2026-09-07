@@ -5,7 +5,7 @@
 | `Super + Enter` | Open Alacritty with the buchhwin profile |
 | `Super + D` | Open application launcher |
 | `Super + B` | Open Brave browser |
-| `Super + E` | Open Files (Nautilus) |
+| `Super + E` | Open Files (Dolphin) |
 | `Super + C` | Open Visual Studio Code |
 | `Super + Shift + C` | Toggle Control Center |
 | `Super + S` | Region screenshot |

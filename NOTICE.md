@@ -1,7 +1,7 @@
 # Notice and credits
 
 **fedora-dwl** is an independent Wayland desktop configuration for Fedora 44
-with GNOME 50 as its required system foundation and fallback desktop.
+with KDE Plasma as its required system foundation and fallback desktop.
 
 It uses the upstream [dwl](https://codeberg.org/dwl/dwl) compositor and the
 [Quickshell](https://quickshell.org/) desktop-shell toolkit. The installer

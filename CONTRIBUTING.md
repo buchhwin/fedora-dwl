@@ -8,7 +8,7 @@ Principles:
 - Keep visible desktop UI inside Quickshell.
 - Avoid compositor patches unless a feature cannot be implemented cleanly
   outside dwl.
-- Fedora 44 with GNOME 50 is the supported platform; the shell drives Wi-Fi,
+- Fedora 44 KDE Plasma is the supported platform; the shell drives Wi-Fi,
   Bluetooth and audio itself instead of shipping extra configuration programs.
 - Never overwrite user configuration without making a backup.
 

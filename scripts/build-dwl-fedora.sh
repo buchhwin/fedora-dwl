@@ -39,7 +39,7 @@ clone_pinned https://github.com/wlrfx/scenefx.git "$SCENEFX_SOURCE" "$SCENEFX_CO
 clone_pinned https://git.pupes.org/jachym/dwl-patches.git "$PATCHES_SOURCE" "$PATCHES_COMMIT"
 
 # SceneFX is installed below the user's data directory and is linked with an
-# rpath. It neither replaces Fedora's wlroots nor changes GNOME.
+# rpath. It neither replaces Fedora's wlroots nor changes Plasma.
 rm -rf -- "$SCENEFX_BUILD" "$SCENEFX_PREFIX"
 meson setup "$SCENEFX_BUILD" "$SCENEFX_SOURCE" \
   --prefix="$SCENEFX_PREFIX" --libdir=lib64 -Dexamples=false

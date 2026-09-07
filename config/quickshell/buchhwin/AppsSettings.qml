@@ -18,7 +18,7 @@ Flickable {
     Process { id: action; stderr: StdioCollector { onStreamFinished: if (text.trim()) root.message = text.trim() } onExited: code => { if (code === 0) { root.message = "Default application changed"; root.expandedMime = "" }; root.pendingId = ""; root.refresh() } }
     ColumnLayout { id: body; width: root.width; spacing: 14
         Text { text: "Default applications"; color: theme.text; font.family: theme.font; font.pixelSize: 17; font.bold: true }
-        Text { Layout.fillWidth: true; text: "These defaults are account-wide and also affect GNOME."; color: theme.yellow; font.family: theme.font; font.pixelSize: 12; wrapMode: Text.WordWrap }
+        Text { Layout.fillWidth: true; text: "These defaults are account-wide and also affect Plasma."; color: theme.yellow; font.family: theme.font; font.pixelSize: 12; wrapMode: Text.WordWrap }
         Repeater { model: root.defaults; delegate: Rectangle {
             id: defaultRow
             required property var modelData

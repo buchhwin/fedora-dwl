@@ -24,7 +24,7 @@ PanelWindow {
     property string displayMessage: ""
     property var iconPacks: []
     property var cursorPacks: []
-    property var appearanceState: ({"icons":"Adwaita", "cursor":"Adwaita", "cursorSize":24, "gaps":8, "border":1})
+    property var appearanceState: ({"icons":"breeze-dark", "cursor":"breeze_cursors", "cursorSize":24, "gaps":8, "border":1})
     property string appearanceMessage: ""
 
     // Network, Bluetooth and sound are handled by the shell's own panels
@@ -563,7 +563,7 @@ PanelWindow {
                             RowLayout {
                                 Layout.fillWidth: true; spacing: 10
                                 Repeater {
-                                    model: [["Files", "Open GNOME Files", ["nautilus"]], ["Passwords", "Keys and credentials", ["seahorse"]]]
+                                    model: [["Files", "Open Dolphin", ["dolphin"]], ["Passwords", "Open KWallet Manager", ["kwalletmanager"]], ["Online accounts", "Google and cloud accounts", ["systemsettings", "kcm_kaccounts"]]]
                                     delegate: Rectangle {
                                         required property var modelData
                                         Layout.fillWidth: true; height: 62; color: hardwareMouse.containsMouse ? theme.surface3 : theme.surface2
@@ -582,7 +582,7 @@ PanelWindow {
                     GridLayout {
                         columns: 2; columnSpacing: 10; rowSpacing: 10
                         Repeater {
-                            model: [["Desktop config", "Edit advanced session values", ["buchhwin-edit-settings"]], ["Calculator", "Open GNOME Calculator", ["gnome-calculator"]], ["System check", "Run the buchhwin doctor", ["buchhwin-terminal", "buchhwin-doctor"]]]
+                            model: [["Desktop config", "Edit advanced session values", ["buchhwin-edit-settings"]], ["Calculator", "Open KCalc", ["kcalc"]], ["System check", "Run the buchhwin doctor", ["buchhwin-terminal", "buchhwin-doctor"]]]
                             delegate: Rectangle {
                                 required property var modelData
                                 Layout.fillWidth: true; Layout.preferredHeight: 92

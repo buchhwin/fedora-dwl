@@ -78,7 +78,7 @@ Test from a TTY and inspect the compositor output. wlroots/NVIDIA behavior can d
 
 ## Portals / screen sharing
 
-The install adds a desktop-specific portal preference using `xdg-desktop-portal-wlr` for screenshot/screencast and GTK for generic portals. Log out and back in after installation so user services receive the new desktop environment.
+The install adds a desktop-specific portal preference using `xdg-desktop-portal-wlr` for screenshot/screencast and KDE for generic portals. Log out and back in after installation so user services receive the new desktop environment.
 
 ## Bar shows empty boxes instead of icons
 
@@ -96,7 +96,7 @@ connection: the polkit agent is not running. `buchhwin-doctor` reports this,
 and `session.py` warns on stderr at session start. Install it with:
 
 ```bash
-sudo dnf install lxpolkit
+sudo dnf install polkit-kde
 ```
 
 ## Super+V shows an empty list
@@ -134,18 +134,18 @@ qs -c buchhwin
 
 ## eduroam or another enterprise network
 
-802.1X profiles are not created in the shell. Log into the GNOME session once
+802.1X profiles are not created in the shell. Log into the Plasma session once
 and add the connection there. NetworkManager stores it system-wide, and it
 then appears under *Saved connections* in the Wi-Fi panel.
 
-## Falling back to GNOME
+## Falling back to Plasma
 
 dwl is an additional session, never the only one. If a buchhwin session will
-not start, pick **GNOME** in GDM and fix things from there. Keeping a working
+not start, pick **Plasma (Wayland)** in SDDM and fix things from there. Keeping a working
 fallback is the point of the setup.
 
 ## Recovering the desktop
 
-Select GNOME in GDM, open a terminal and run `./uninstall.sh` from the cloned
+Select Plasma in SDDM, open a terminal and run `./uninstall.sh` from the cloned
 repository. Installer backups remain below
-`~/.local/state/buchhwin-dwl/backups/`; the installer never removes GNOME.
+`~/.local/state/buchhwin-dwl/backups/`; the installer never removes Plasma.

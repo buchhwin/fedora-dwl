@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0 - 2026-09-07
+
+- Added the Fedora KDE Plasma base and SDDM integration.
+- Replaced GNOME applications, portals, accounts, keyring and calendar APIs
+  with Dolphin, Okular, Gwenview, Kate, KWallet, KAccounts and Akonadi.
+- Added Merkuro integration for the bar calendar.
+- Made VLC the default audio and video player.
+- Kept dwl, Quickshell and all existing shell panels and visual behavior.
+
 ## 1.0.0 - 2026-09-05
 
 - Reproducible Fedora 44 / GNOME 50 installation from a clean checkout.

@@ -154,18 +154,25 @@ write_state()
 
 subprocess.run(
     ["dbus-update-activation-environment", "--systemd",
-     "WAYLAND_DISPLAY", "XDG_CURRENT_DESKTOP", "XDG_SESSION_TYPE", "PATH"],
+     "WAYLAND_DISPLAY", "XDG_CURRENT_DESKTOP", "XDG_SESSION_TYPE", "PATH",
+     "KDE_FULL_SESSION", "KDE_SESSION_VERSION", "XDG_MENU_PREFIX"],
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL,
     check=False,
 )
 
 # Fedora's portal unit has Requisite=graphical-session.target. Minimal
-# compositors do not activate it automatically as GNOME does.
+# compositors do not activate it automatically as Plasma does.
 subprocess.run(["systemctl", "--user", "start", "buchhwin-session.target"],
                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
 subprocess.run(["systemctl", "--user", "start", "xdg-desktop-portal.service"],
                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+
+# Merkuro uses Akonadi even though plasmashell is intentionally not part of
+# this session. Starting it here makes the bar calendar and its editor share
+# exactly the same local/online calendars as Merkuro.
+if shutil.which("akonadictl"):
+    spawn(["akonadictl", "start"], quiet=True)
 
 # Apply a profile saved by the graphical display tool. The helper waits until
 # dwl has announced its outputs, so this remains safe on a new or undocked PC.
@@ -216,10 +223,9 @@ if Path(geoclue_agent).exists():
 # up later as "udisks will not mount" or "NetworkManager will not save a
 # system connection".
 polkit_candidates = (
-    "/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1",  # compatibility
-    "/usr/bin/lxpolkit",                                               # Fedora
-    "/usr/libexec/polkit-gnome-authentication-agent-1",                # Fedora
-    "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1",       # Arch
+    "/usr/libexec/polkit-kde-authentication-agent-1",                  # Fedora KDE
+    "/usr/lib/polkit-kde-authentication-agent-1",                      # compatibility
+    "/usr/bin/lxpolkit",                                               # fallback
 )
 for candidate in polkit_candidates:
     if Path(candidate).exists():
@@ -228,7 +234,7 @@ for candidate in polkit_candidates:
 else:
     warn("no polkit authentication agent found; privileged actions such as "
          "mounting drives or saving system network connections will fail "
-         "without a prompt. Install lxpolkit or policykit-1-gnome.")
+         "without a prompt. Install polkit-kde.")
 
 # Quickshell is the entire visible desktop, so it is supervised rather than
 # spawned once.
