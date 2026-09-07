@@ -33,6 +33,7 @@ PanelWindow {
     property var networkPanel: null
     property var bluetoothPanel: null
     property var audioPanel: null
+    required property var audioState
 
     // Panels fade and lift instead of appearing instantly. `visible` has to
     // outlive `opened` so the closing animation can finish playing.
@@ -444,22 +445,7 @@ PanelWindow {
                         }
                     }
 
-                    GridLayout {
-                        columns: 2; columnSpacing: 10; rowSpacing: 10
-                        Repeater {
-                            model: [["Wi-Fi", "Networks and saved connections", "network"], ["Bluetooth", "Pair and manage devices", "bluetooth"], ["Sound", "Outputs, inputs and applications", "audio"]]
-                            delegate: Rectangle {
-                                required property var modelData
-                                Layout.fillWidth: true; Layout.preferredHeight: 92
-                                color: connectionMouse.containsMouse ? theme.surface3 : theme.surface2; border.width: 1; border.color: theme.border
-                                Column { anchors.fill: parent; anchors.margins: 14; spacing: 6
-                                    Text { font.family: theme.font; text: modelData[0]; color: theme.text; font.bold: true; font.pixelSize: 14 }
-                                    Text { font.family: theme.font; width: parent.width; text: modelData[1]; color: theme.subtext; wrapMode: Text.WordWrap; font.pixelSize: 10 }
-                                }
-                                MouseArea { id: connectionMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.launch(modelData[2]) }
-                            }
-                        }
-                    }
+                    ConnectionsSettings { audioState: root.audioState }
 
                     Flickable {
                         contentWidth: width

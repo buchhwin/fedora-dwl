@@ -211,19 +211,6 @@ Scope {
                     }
 
                     Rectangle {
-                        width: Math.max(48, layoutLabel.implicitWidth + 18)
-                        height: 30; radius: 0; color: "transparent"
-                        Text { font.family: theme.font;
-                            id: layoutLabel
-                            anchors.centerIn: parent
-                            text: panel.outputState.layout || "[]="
-                            color: theme.mauve
-                            font.bold: true
-                            font.pixelSize: 12
-                        }
-                    }
-
-                    Rectangle {
                         Layout.fillWidth: true
                         Layout.maximumWidth: 500
                         height: 30; radius: 0; color: "transparent"

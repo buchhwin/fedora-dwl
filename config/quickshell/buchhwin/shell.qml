@@ -121,6 +121,7 @@ ShellRoot {
     ClipboardHistory { id: clipboard }
     Settings {
         id: settings
+        audioState: audioState
         networkPanel: networkPanel
         bluetoothPanel: bluetoothPanel
         audioPanel: audioPanel

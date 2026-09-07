@@ -11,10 +11,16 @@ import sys
 
 
 def parse_date(value: str, value_time: str) -> int:
-    parsed = dt.datetime.strptime(value.strip(), "%A, %B %d, %Y")
+    raw = value.strip()
+    try:
+        parsed = dt.datetime.strptime(raw, "%Y-%m-%d")
+    except ValueError:
+        # Older KonsoleKalendar releases emitted an English long date.
+        parsed = dt.datetime.strptime(raw, "%A, %B %d, %Y")
     if value_time.strip() and value_time.strip().lower() != "float":
-        hour, minute = map(int, value_time.split(":"))
-        parsed = parsed.replace(hour=hour, minute=minute)
+        parts = [int(part) for part in value_time.split(":")]
+        parsed = parsed.replace(hour=parts[0], minute=parts[1],
+                                second=parts[2] if len(parts) > 2 else 0)
     return int(parsed.astimezone().timestamp())
 
 

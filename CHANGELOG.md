@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Remove the cryptic dwl layout symbol (such as `TTT`) from the bar while keeping all layout shortcuts available.
+- Parse Fedora 44 KonsoleKalendar's ISO dates so Merkuro events appear.
+- Embed Wi-Fi, Bluetooth and audio management directly in Settings → Connections.
 - Increase launcher typography, spacing and app icon size for clearer scanning.
 - Polish the Control Center battery card and remove duplicate connectivity shortcuts.
 - Add a terminal-start Fastfetch switch and clearer clock-format presets.
