@@ -17,11 +17,13 @@ for cmd in "${commands[@]}"; do
   command -v "$cmd" >/dev/null 2>&1 && good "$cmd -> $(command -v "$cmd")" || fail "$cmd missing"
 done
 
-# Distribution packages use either brave-browser or brave.
+# Accept both native Brave packages and the Flatpak installed by this project.
 if browser="$(command -v brave-browser || command -v brave)"; then
   good "browser -> $browser"
+elif command -v flatpak >/dev/null 2>&1 && flatpak info com.brave.Browser >/dev/null 2>&1; then
+  good "browser -> Flatpak com.brave.Browser"
 else
-  fail "no Brave binary found (brave-browser or brave)"
+  fail "Brave missing (native package or Flatpak com.brave.Browser)"
 fi
 
 if command -v dwl-buchhwin >/dev/null 2>&1; then
@@ -45,6 +47,7 @@ fi
 # A missing polkit agent is invisible until something needs authentication.
 polkit_found=""
 for candidate in \
+  /usr/libexec/kf6/polkit-kde-authentication-agent-1 \
   /usr/libexec/polkit-kde-authentication-agent-1 \
   /usr/lib/polkit-kde-authentication-agent-1 \
   /usr/bin/lxpolkit; do

@@ -211,15 +211,16 @@ grep -q 'com.brave.Browser' install-fedora.sh \
   echo "Installer must provision the complete Flatpak application set." >&2
   exit 1
 }
-grep -q 'org.kde.okular.desktop application/pdf' install-fedora.sh || {
-  echo "PDF files must default to Okular instead of the browser or office suite." >&2
+if grep -Eq '^[[:space:]]*xdg-(mime[[:space:]]+default|settings[[:space:]]+set)' install-fedora.sh; then
+  echo "Installer must preserve Plasma's default applications." >&2
   exit 1
-}
-grep -q 'vlc.desktop video/mp4' install-fedora.sh \
-  && grep -q 'vlc.desktop audio/mpeg' install-fedora.sh || {
-  echo "VLC must be the default audio and video player." >&2
-  exit 1
-}
+fi
+for file in scripts/session.py scripts/buchhwin-doctor; do
+  grep -q '/usr/libexec/kf6/polkit-kde-authentication-agent-1' "$file" || {
+    echo "$file must support Fedora KDE 6's polkit agent path." >&2
+    exit 1
+  }
+done
 grep -q '^BROWSER=brave$' config/settings.env || {
   echo "Brave must remain the default buchhwin browser." >&2
   exit 1

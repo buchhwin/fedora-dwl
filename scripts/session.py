@@ -223,7 +223,8 @@ if Path(geoclue_agent).exists():
 # up later as "udisks will not mount" or "NetworkManager will not save a
 # system connection".
 polkit_candidates = (
-    "/usr/libexec/polkit-kde-authentication-agent-1",                  # Fedora KDE
+    "/usr/libexec/kf6/polkit-kde-authentication-agent-1",              # Fedora KDE 6
+    "/usr/libexec/polkit-kde-authentication-agent-1",                  # compatibility
     "/usr/lib/polkit-kde-authentication-agent-1",                      # compatibility
     "/usr/bin/lxpolkit",                                               # fallback
 )

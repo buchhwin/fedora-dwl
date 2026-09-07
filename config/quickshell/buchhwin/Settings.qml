@@ -563,7 +563,7 @@ PanelWindow {
                             RowLayout {
                                 Layout.fillWidth: true; spacing: 10
                                 Repeater {
-                                    model: [["Files", "Open Dolphin", ["dolphin"]], ["Passwords", "Open KWallet Manager", ["kwalletmanager"]], ["Online accounts", "Google and cloud accounts", ["systemsettings", "kcm_kaccounts"]]]
+                                    model: [["Files", "Open Dolphin", ["dolphin"]], ["Passwords", "Open KWallet Manager", ["kwalletmanager5"]], ["Online accounts", "Google and cloud accounts", ["systemsettings", "kcm_kaccounts"]]]
                                     delegate: Rectangle {
                                         required property var modelData
                                         Layout.fillWidth: true; height: 62; color: hardwareMouse.containsMouse ? theme.surface3 : theme.surface2

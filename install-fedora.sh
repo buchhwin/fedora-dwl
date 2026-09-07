@@ -86,19 +86,8 @@ fi
 if (( ! PREPARE_ONLY )); then
   flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
   flatpak install --user -y flathub com.brave.Browser com.visualstudio.code org.onlyoffice.desktopeditors
-  xdg-settings set default-web-browser com.brave.Browser.desktop || true
-  # KDE applications are the desktop defaults. VLC intentionally owns both
-  # audio and video while browsers and office suites do not take over PDFs.
-  xdg-mime default org.kde.okular.desktop application/pdf
-  xdg-mime default org.kde.gwenview.desktop image/jpeg
-  xdg-mime default org.kde.gwenview.desktop image/png
-  xdg-mime default org.kde.kate.desktop text/plain
-  xdg-mime default vlc.desktop video/mp4
-  xdg-mime default vlc.desktop video/x-matroska
-  xdg-mime default vlc.desktop audio/mpeg
-  xdg-mime default vlc.desktop audio/flac
-  xdg-mime default org.kde.dolphin.desktop inode/directory
-  xdg-mime default org.kde.merkuro.calendar.desktop text/calendar
+  # Default applications are user-wide, including Plasma. Leave the user's
+  # choices intact; session shortcuts launch the bundled applications directly.
 fi
 
 # Starship is not shipped by Fedora. Install a pinned standalone binary into

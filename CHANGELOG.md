@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Fixed Fedora KDE 6 polkit agent discovery in the session and doctor.
+- Fixed the KWallet Manager settings action to use Fedora's executable name.
+- Recognize the Brave Flatpak in the doctor and launch it for `BROWSER=brave`.
+- Preserve the user's Plasma default browser and file associations on install.
+
 ## 1.1.0 - 2026-09-07
 
 - Added the Fedora KDE Plasma base and SDDM integration.

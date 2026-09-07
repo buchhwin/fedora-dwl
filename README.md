@@ -108,8 +108,8 @@ After reviewing the plan, install the separate **buchhwin** SDDM session with:
 ./install-fedora.sh
 ```
 
-Plasma, its fonts and its settings are not changed. MesloLGS Nerd Font is
-installed in the user's font directory and selected only by the dedicated
+Plasma, its fonts, default browser and file associations are not changed.
+MesloLGS Nerd Font is installed in the user's font directory and selected only by the dedicated
 Quickshell, Kitty and terminal configurations. Existing `~/.config/quickshell/dwl`
 and `/usr/local/bin/dwl` paths are not replaced.
 
