@@ -3,7 +3,25 @@
 export PATH="$HOME/.local/bin:$PATH"
 
 if [[ -o interactive ]]; then
+  # Keep history and completion state inside the dedicated shell profile.
+  HISTFILE="${ZDOTDIR:-$HOME/.config/buchhwin-dwl/zsh}/.zsh_history"
+  HISTSIZE=10000
+  SAVEHIST=10000
+  setopt APPEND_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE SHARE_HISTORY
+
+  autoload -Uz compinit
+  compinit -d "${ZDOTDIR:-$HOME/.config/buchhwin-dwl/zsh}/.zcompdump"
+  zstyle ':completion:*' menu select
+  zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+  bindkey '^I' expand-or-complete
+
   command -v fastfetch >/dev/null 2>&1 \
     && fastfetch --config "$HOME/.config/buchhwin-dwl/fastfetch.jsonc"
   command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
+
+  [[ -r /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] \
+    && source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+  # Load highlighting last so it can wrap all previously registered widgets.
+  [[ -r /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] \
+    && source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Enable Zsh completion, persistent history, autosuggestions and syntax highlighting.
 - Start the dedicated Zsh/Starship profile explicitly in buchhwin terminals.
 - Stop installing Brave and Visual Studio Code as Flatpaks; OnlyOffice remains.
 - Fixed Fedora KDE 6 polkit agent discovery in the session and doctor.

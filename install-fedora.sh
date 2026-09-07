@@ -27,6 +27,7 @@ esac
 (( EUID != 0 )) || { echo "Run as your normal user, not with sudo." >&2; exit 1; }
 packages=(
   git python3 procps-ng dbus-tools curl unzip fontconfig zsh flatpak fastfetch
+  zsh-autosuggestions zsh-syntax-highlighting
   quickshell kitty alacritty xorg-x11-server-Xwayland NetworkManager bluez
   pipewire wireplumber pulseaudio-utils playerctl brightnessctl upower
   swaybg swaylock grim slurp swappy wl-clipboard wlr-randr wdisplays
