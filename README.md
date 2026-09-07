@@ -1,5 +1,24 @@
 # Fedora dwl Desktop
 
+## Choose your Fedora edition
+
+This repository provides two separately installable variants of the same dwl
+and Quickshell desktop. Choose the branch that matches the Fedora desktop
+already installed on the computer:
+
+| Fedora installation | Repository version | Command |
+|---|---|---|
+| Fedora Workstation with GNOME | [`main`](https://github.com/buchhwin/fedora-dwl/tree/main) | `git clone --branch main https://github.com/buchhwin/fedora-dwl.git` |
+| Fedora KDE Plasma | [`kde-base`](https://github.com/buchhwin/fedora-dwl/tree/kde-base) | `git clone --branch kde-base https://github.com/buchhwin/fedora-dwl.git` |
+
+The stable snapshot of the original GNOME setup is also preserved as the
+[`gnome-final`](https://github.com/buchhwin/fedora-dwl/tree/gnome-final)
+tag. Do not use either installer to convert an existing GNOME installation to
+KDE, or vice versa. Install the matching Fedora edition first and then run its
+installer. Both variants keep dwl, Quickshell, the visual design, keybindings,
+Kitty, Starship and the settings application; only their desktop foundation
+and default applications differ.
+
 A complete, keyboard-first Wayland desktop for **Fedora 44 with GNOME 50**.
 It is built from two main pieces:
 
