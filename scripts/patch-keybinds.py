@@ -15,6 +15,7 @@ targets = {
  "resize_left": r"setmfact,\s+\{\.f = -0\.05f\}", "resize_right": r"setmfact,\s+\{\.f = \+0\.05f\}",
  "resize_up": r"sethorizontalmfact,\s*\{\.f = -0\.05f\}", "resize_down": r"sethorizontalmfact,\s*\{\.f = \+0\.05f\}",
  "tile": r"setlayout,\s+\{\.v = &layouts\[0\]\}", "monocle": r"setlayout,\s+\{\.v = &layouts\[1\]\}",
+ "layout_orientation": r"togglelayoutorientation,\s+\{0\}",
  "floating": r"togglefloating,\s+\{0\}", "fullscreen": r"togglefullscreen,\s+\{0\}", }
 mods = {"Super":"MODKEY", "Super+Shift":"MODKEY|WLR_MODIFIER_SHIFT", "Super+Ctrl":"MODKEY|WLR_MODIFIER_CTRL", "Super+Alt":"MODKEY|WLR_MODIFIER_ALT"}
 for ident, value in values.items():

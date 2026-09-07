@@ -208,6 +208,7 @@ keys = r'''static const Key keys[] = {
     { MODKEY,                           XKB_KEY_f,                      setlayout,        {.v = &layouts[1]} },
     { MODKEY|WLR_MODIFIER_SHIFT,        XKB_KEY_M,                      setlayout,        {.v = &layouts[2]} },
     { MODKEY,                           XKB_KEY_space,                  setlayout,        {0} },
+    { MODKEY|WLR_MODIFIER_ALT,          XKB_KEY_space,                  togglelayoutorientation, {0} },
     { MODKEY|WLR_MODIFIER_SHIFT,        XKB_KEY_space,                  togglefloating,  {0} },
     { MODKEY|WLR_MODIFIER_SHIFT,        XKB_KEY_F,                      togglefullscreen, {0} },
 

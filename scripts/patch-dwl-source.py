@@ -330,7 +330,7 @@ if prototype_anchor not in text:
     raise SystemExit("horizontal layout patch failed: tile prototype missing")
 text = text.replace(
     prototype_anchor,
-    "static void bstack(Monitor *m);\nstatic void sethorizontalmfact(const Arg *arg);\n" + prototype_anchor,
+    "static void bstack(Monitor *m);\nstatic void sethorizontalmfact(const Arg *arg);\nstatic void togglelayoutorientation(const Arg *arg);\n" + prototype_anchor,
     1,
 )
 
@@ -383,6 +383,16 @@ sethorizontalmfact(const Arg *arg)
     if (selmon->lt[selmon->sellt] != &layouts[3])
         setlayout(&layout);
     setmfact(arg);
+}
+
+void
+togglelayoutorientation(const Arg *arg)
+{
+    Arg layout = {.v = selmon && selmon->lt[selmon->sellt] == &layouts[3]
+        ? &layouts[0] : &layouts[3]};
+
+    if (selmon)
+        setlayout(&layout);
 }
 '''
 text = text.replace(tile_anchor, horizontal_code + tile_anchor, 1)

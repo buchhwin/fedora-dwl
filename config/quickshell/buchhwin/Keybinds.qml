@@ -52,6 +52,7 @@ PanelWindow {
         ["SUPER + F", "Floating layout"],
         ["SUPER + SHIFT + M", "Monocle layout"],
         ["SUPER + SPACE", "Cycle layout"],
+        ["SUPER + ALT + SPACE", "Switch side-by-side / top-and-bottom"],
         ["SUPER + SHIFT + SPACE", "Toggle focused window floating"],
         ["SUPER + SHIFT + F", "Fullscreen"],
         ["SUPER + 1..9", "Switch tag"],

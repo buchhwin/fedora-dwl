@@ -34,6 +34,7 @@ KEYBINDS = [
     ("resize_left", "Resize left", "Super", "Left"), ("resize_right", "Resize right", "Super", "Right"),
     ("resize_up", "Horizontal layout / resize up", "Super", "Up"), ("resize_down", "Horizontal layout / resize down", "Super", "Down"),
     ("tile", "Tiled layout", "Super", "t"), ("monocle", "Monocle layout", "Super", "f"),
+    ("layout_orientation", "Switch side-by-side / top-and-bottom", "Super+Alt", "space"),
     ("floating", "Toggle floating", "Super+Shift", "space"), ("fullscreen", "Toggle fullscreen", "Super+Shift", "f"),
 ]
 VALID_MODIFIERS = {"Super", "Super+Shift", "Super+Ctrl", "Super+Alt"}

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Complete embedded sound settings with outputs, inputs and application streams.
+- Add Super+Alt+Space to switch directly between side-by-side and top-and-bottom tiling.
 - Remove the cryptic dwl layout symbol (such as `TTT`) from the bar while keeping all layout shortcuts available.
 - Parse Fedora 44 KonsoleKalendar's ISO dates so Merkuro events appear.
 - Embed Wi-Fi, Bluetooth and audio management directly in Settings → Connections.
