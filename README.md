@@ -258,6 +258,11 @@ Plasma's terminal and font settings.
 The session uses a dedicated Zsh configuration in
 `~/.config/buchhwin-dwl/zsh`. Personal shell files and secrets are not loaded.
 
+Open **Settings → Appearance → Fastfetch image → Choose image** to select
+the terminal's Fastfetch image independently of the wallpaper. The preview
+shows your selection; open a new terminal to see it in Fastfetch. Updates
+preserve this choice. Keep the selected image file at its saved location.
+
 After changing a setting that affects the compositor, rebuild/install it with:
 
 ```bash

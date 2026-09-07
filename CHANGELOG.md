@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a Fastfetch image chooser and preview to Appearance settings, preserving
+  the selected image when updating the installation.
 - Enable Zsh completion, persistent history, autosuggestions and syntax highlighting.
 - Start the dedicated Zsh/Starship profile explicitly in buchhwin terminals.
 - Stop installing Brave and Visual Studio Code as Flatpaks; OnlyOffice remains.

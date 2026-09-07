@@ -310,6 +310,11 @@ PanelWindow {
                         id: appearanceContent
                         width: parent.width
                         spacing: 12
+                        FastfetchSettings {
+                            Layout.fillWidth: true
+                            onChooseStarted: root.opened = false
+                            onChooseFinished: root.opened = true
+                        }
                         Rectangle {
                             Layout.fillWidth: true; Layout.preferredHeight: 165
                             color: theme.surface2; border.width: 1; border.color: theme.border
