@@ -25,7 +25,7 @@ PanelWindow {
 
     Rectangle {
         anchors.top: parent.top; anchors.right: parent.right
-        anchors.topMargin: 38; anchors.rightMargin: 12
+        anchors.topMargin: theme.barPosition === "top" ? theme.barSize : 12; anchors.rightMargin: theme.barPosition === "right" ? theme.barSize + 12 : 12
         width: Math.min(560, parent.width - 24); height: 286; radius: 16
         color: theme.surface; border.width: 1; border.color: theme.border; opacity: root.reveal
         MouseArea { anchors.fill: parent; acceptedButtons: Qt.NoButton }

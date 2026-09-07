@@ -155,7 +155,7 @@ PanelWindow {
 
     Rectangle {
         anchors { top: parent.top; bottom: parent.bottom; right: parent.right }
-        anchors.topMargin: 38
+        anchors.topMargin: theme.barPosition === "top" ? theme.barSize : 12
         anchors.rightMargin: 0
         anchors.bottomMargin: 0
         width: Math.min(430, parent.width - 20)

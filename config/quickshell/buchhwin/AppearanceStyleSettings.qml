@@ -6,7 +6,7 @@ Rectangle {
     property var state: ({})
     property var fonts: []
     signal setValue(string key, var value)
-    implicitHeight: 315
+    implicitHeight: 405
     color: theme.surface2
     border.width: 1
     border.color: theme.border
@@ -16,6 +16,15 @@ Rectangle {
         anchors.fill: parent; anchors.margins: 14; spacing: 9
         Text { text: "dwl theme"; color: theme.text; font.family: theme.font; font.pixelSize: 14; font.bold: true }
         Text { text: "These settings affect only the buchhwin dwl session."; color: theme.subtext; font.family: theme.font; font.pixelSize: 9 }
+
+        Rectangle {
+            Layout.fillWidth: true; height: 42; radius: 7
+            color: panel.state.background || theme.bg; border.width: 1; border.color: theme.border
+            Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top; height: 18; color: panel.state.bar || theme.surface
+                Text { anchors.left: parent.left; anchors.leftMargin: 8; anchors.verticalCenter: parent.verticalCenter; text: "1  2  3    Theme preview"; color: panel.state.text || theme.text; font.family: panel.state.font || theme.font; font.pixelSize: 8 }
+                Rectangle { anchors.right: parent.right; anchors.rightMargin: 7; anchors.verticalCenter: parent.verticalCenter; width: 7; height: 7; radius: 4; color: panel.state.accent || theme.blue }
+            }
+        }
 
         Text { text: "Preset"; color: theme.subtext; font.family: theme.font; font.pixelSize: 9 }
         RowLayout {
@@ -63,6 +72,12 @@ Rectangle {
                     MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: panel.setValue("barPosition", modelData) }
                 }
             }
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            Text { text: "Bar size"; color: theme.subtext; font.family: theme.font; font.pixelSize: 9 }
+            ValueSlider { Layout.fillWidth: true; from: 34; to: 64; value: panel.state.barSize || 38; onValueEdited: value => panel.setValue("barSize", Math.round(value)) }
         }
 
         RowLayout {

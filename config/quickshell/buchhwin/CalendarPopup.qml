@@ -109,7 +109,7 @@ PanelWindow {
 
     Rectangle {
         anchors.top: parent.top; anchors.horizontalCenter: parent.horizontalCenter
-        anchors.topMargin: 38
+        anchors.topMargin: theme.barPosition === "top" ? theme.barSize : 12
         width: Math.min(720, parent.width - 24)
         height: Math.min(480, parent.height - 58)
         radius: 14; color: theme.surface; border.width: 1; border.color: theme.border

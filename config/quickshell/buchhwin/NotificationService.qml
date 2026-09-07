@@ -7,6 +7,7 @@ Scope {
     property alias server: server
     property var latest: null
     property int generation: 0
+    property bool doNotDisturb: false
 
     NotificationServer {
         id: server

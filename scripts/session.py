@@ -211,6 +211,7 @@ else:
     warn("cliphist not found; clipboard history (Super+V) will stay empty")
 
 spawn(["udiskie", "--automount", "--no-notify"], quiet=True)
+spawn(["buchhwin-sessionctl", "apply"], quiet=True)
 
 # Authorize location-aware components (currently the weather widget). GeoClue
 # still controls access and the weather helper falls back to coarse IP lookup.

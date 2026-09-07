@@ -11,7 +11,7 @@ commands=(
   dolphin okular gwenview kate vlc wlr-randr wdisplays cliphist
   nmcli bluetoothctl wpctl pactl
   brightnessctl playerctl
-  grim slurp swappy wl-copy notify-send swaybg udiskie
+  grim slurp swappy wl-copy notify-send swaybg swayidle gammastep udiskie
 )
 for cmd in "${commands[@]}"; do
   command -v "$cmd" >/dev/null 2>&1 && good "$cmd -> $(command -v "$cmd")" || fail "$cmd missing"

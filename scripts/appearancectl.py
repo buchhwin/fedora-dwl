@@ -46,7 +46,7 @@ def state() -> dict:
     value = {"icons": "breeze-dark", "cursor": "breeze_cursors", "cursorSize": 24,
              "gaps": 8, "border": 1, "font": "MesloLGS Nerd Font Mono",
              "theme": "graphite", "accent": "#d0d0d0", "background": "#181818",
-             "bar": "#242424", "text": "#eeeeee", "barPosition": "top"}
+             "bar": "#242424", "text": "#eeeeee", "barPosition": "top", "barSize": 38}
     if settings.exists():
         value.update(json.loads(settings.read_text()))
     return value
@@ -84,7 +84,7 @@ def main() -> int:
         key, raw = sys.argv[2], sys.argv[3]
         value = state()
         if key not in ("icons", "cursor", "cursorSize", "gaps", "border", "font",
-                       "theme", "accent", "background", "bar", "text", "barPosition"):
+                       "theme", "accent", "background", "bar", "text", "barPosition", "barSize"):
             return 2
         if key in ("accent", "background", "bar", "text") and not re.fullmatch(r"#[0-9a-fA-F]{6}", raw):
             print("Use a color in #RRGGBB format", file=sys.stderr)
@@ -99,7 +99,7 @@ def main() -> int:
         }
         if key == "theme" and raw in presets:
             value.update(presets[raw])
-        value[key] = int(raw) if key in ("cursorSize", "gaps", "border") else raw
+        value[key] = int(raw) if key in ("cursorSize", "gaps", "border", "barSize") else raw
         save(value)
         if key == "icons" and shell.exists():
             text = shell.read_text()
@@ -117,7 +117,7 @@ def main() -> int:
             )
         if key in ("gaps", "border"):
             subprocess.run(["buchhwin-rebuild-appearance"], check=True)
-        if key in ("font", "theme", "accent", "background", "bar", "text", "barPosition"):
+        if key in ("font", "theme", "accent", "background", "bar", "text", "barPosition", "barSize"):
             subprocess.run(["pkill", "-TERM", "-f", "^qs -c buchhwin$"],
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
             print("Appearance saved — the shell is reloading")

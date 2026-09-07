@@ -61,7 +61,7 @@ Rectangle {
         ColumnLayout {
             Layout.fillWidth: true; spacing: 7
             Text { text: "Fastfetch image"; font.family: theme.font; font.pixelSize: 14; font.bold: true; color: theme.text }
-            Text { Layout.fillWidth: true; text: panel.imagePath || "No image selected"; elide: Text.ElideMiddle; font.family: theme.font; font.pixelSize: 9; color: theme.subtext }
+            Text { Layout.fillWidth: true; text: panel.imagePath.length ? panel.imagePath.split("/").pop() : "No image selected"; elide: Text.ElideMiddle; font.family: theme.font; font.pixelSize: 9; color: theme.subtext }
             Text { Layout.fillWidth: true; text: panel.message; wrapMode: Text.WordWrap; font.family: theme.font; font.pixelSize: 9; color: theme.blue }
             Item { Layout.fillHeight: true }
             Rectangle {

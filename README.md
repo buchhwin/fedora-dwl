@@ -52,7 +52,8 @@ already ship.
   slide, hover and state changes transition — all timed from `Theme.qml`
 - consistent MesloLGS Nerd Font Mono typography and icon glyphs
 - active tag / occupied tag / urgent tag state
-- current layout and focused app/window title
+- focused app/window title
+- StatusNotifier system tray for background applications
 - Quickshell app launcher
 - Control Center
 - **native Wi-Fi panel**: scan, connect, inline password entry, saved connections
@@ -69,6 +70,8 @@ already ship.
 - Quickshell is supervised and restarts itself if it crashes
 - bundled dark grayscale wallpaper with a solid-color fallback
 - lock/suspend/logout/reboot/shutdown menu
+- automatic idle lock, display power saving and suspend timers
+- optional location-aware night light
 - on-screen keybind viewer
 - SDDM Wayland session entry alongside Plasma
 - XDG desktop portal configuration for wlroots
@@ -181,6 +184,7 @@ database. Dolphin accesses Google Drive through KDE's `kio-gdrive` integration.
 | `Super + F` | Floating layout |
 | `Super + Shift + M` | Monocle layout |
 | `Super + Space` | Cycle layout |
+| `Super + Alt + Space` | Switch side-by-side / top-and-bottom tiling |
 | `Super + Shift + Space` | Toggle focused window floating |
 | `Super + Shift + F` | Fullscreen |
 | `Super + 1..9` | Switch tag |
@@ -270,6 +274,11 @@ These values are isolated from Plasma and do not modify KDE's theme or fonts.
 The Terminal settings include common 12/24-hour clock formats and a switch for
 showing Fastfetch when a terminal opens. Manual `fastfetch` and `ff` remain
 available when the startup display is disabled.
+
+The Hardware page controls automatic locking, display power saving, suspend
+and a location-aware night light. These services run only in the buchhwin dwl
+session. The notification centre includes a do-not-disturb switch, and the bar
+shows StatusNotifier tray icons from applications such as Citrix or KDE tools.
 
 After changing a setting that affects the compositor, rebuild/install it with:
 

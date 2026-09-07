@@ -3,6 +3,7 @@ import Quickshell.Io
 import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Controls
 
 PanelWindow {
     id: root
@@ -25,7 +26,7 @@ PanelWindow {
     property var iconPacks: []
     property var cursorPacks: []
     property var fontPacks: []
-    property var appearanceState: ({"icons":"breeze-dark", "cursor":"breeze_cursors", "cursorSize":24, "gaps":8, "border":1, "font":"MesloLGS Nerd Font Mono", "theme":"graphite", "accent":"#d0d0d0", "background":"#181818", "bar":"#242424", "text":"#eeeeee", "barPosition":"top"})
+    property var appearanceState: ({"icons":"breeze-dark", "cursor":"breeze_cursors", "cursorSize":24, "gaps":8, "border":1, "font":"MesloLGS Nerd Font Mono", "theme":"graphite", "accent":"#d0d0d0", "background":"#181818", "bar":"#242424", "text":"#eeeeee", "barPosition":"top", "barSize":38})
     property string appearanceMessage: ""
 
     // Network, Bluetooth and sound are handled by the shell's own panels
@@ -235,8 +236,8 @@ PanelWindow {
 
     Rectangle {
         anchors.centerIn: parent
-        width: Math.min(1180, parent.width - 32)
-        height: Math.min(800, parent.height - 48)
+        width: Math.min(1320, parent.width - 32)
+        height: Math.min(900, parent.height - 48)
         opacity: root.reveal
         transform: Translate { y: (1 - root.reveal) * theme.lift }
         color: theme.surface
@@ -249,7 +250,7 @@ PanelWindow {
             spacing: 0
 
             Rectangle {
-                Layout.preferredWidth: 250
+                Layout.preferredWidth: 220
                 Layout.fillHeight: true
                 color: theme.surface2
                 border.width: 0
@@ -308,6 +309,7 @@ PanelWindow {
                         contentHeight: appearanceContent.implicitHeight
                         clip: true
                         boundsBehavior: Flickable.StopAtBounds
+                        ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
                         ColumnLayout {
                         id: appearanceContent
                         width: parent.width
@@ -330,7 +332,7 @@ PanelWindow {
                                 ColumnLayout {
                                     Layout.fillWidth: true; spacing: 7
                                     Text { font.family: theme.font; text: "Wallpaper"; color: theme.text; font.bold: true; font.pixelSize: 14 }
-                                    Text { font.family: theme.font; Layout.fillWidth: true; text: root.wallpaperPath || "No wallpaper selected"; color: theme.subtext; elide: Text.ElideMiddle; font.pixelSize: 9 }
+                                    Text { font.family: theme.font; Layout.fillWidth: true; text: root.wallpaperPath.length ? root.wallpaperPath.split("/").pop() : "No wallpaper selected"; color: theme.subtext; elide: Text.ElideMiddle; font.pixelSize: 9 }
                                     Text { font.family: theme.font; Layout.fillWidth: true; visible: root.wallpaperMessage.length > 0; text: root.wallpaperMessage; color: theme.blue; elide: Text.ElideRight; font.pixelSize: 9 }
                                     Item { Layout.fillHeight: true }
                                     Rectangle {
@@ -396,7 +398,7 @@ PanelWindow {
                         }
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 315
+                            Layout.preferredHeight: 405
                             AppearanceStyleSettings {
                                 anchors.fill: parent
                                 state: root.appearanceState
@@ -445,12 +447,14 @@ PanelWindow {
                         }
                     }
 
-                    ConnectionsSettings { audioState: root.audioState }
+                    ConnectionsSettings { audioState: root.audioState; active: root.opened && root.currentTab === 1 }
 
                     Flickable {
                         contentWidth: width
                         contentHeight: hardwareContent.implicitHeight
                         clip: true
+                        boundsBehavior: Flickable.StopAtBounds
+                        ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
                         ColumnLayout {
                             id: hardwareContent
                             width: parent.width
@@ -562,6 +566,7 @@ PanelWindow {
                                 }
                             }
                             Text { Layout.fillWidth: true; font.family: theme.font; text: root.displayMessage; color: theme.blue; font.pixelSize: 9; wrapMode: Text.WordWrap }
+                            PowerSettings { Layout.fillWidth: true }
                             RowLayout {
                                 Layout.fillWidth: true; spacing: 10
                                 Repeater {
@@ -584,7 +589,7 @@ PanelWindow {
                     GridLayout {
                         columns: 2; columnSpacing: 10; rowSpacing: 10
                         Repeater {
-                            model: [["Desktop config", "Edit advanced session values", ["buchhwin-edit-settings"]], ["Calculator", "Open KCalc", ["kcalc"]], ["System check", "Run the buchhwin doctor", ["buchhwin-terminal", "buchhwin-doctor"]]]
+                            model: [["Desktop config", "Edit advanced session values", ["buchhwin-edit-settings"]], ["System check", "Run the buchhwin doctor", ["buchhwin-terminal", "buchhwin-doctor"]], ["Create backup", "Save settings and shell configuration", ["buchhwin-backup", "create"]], ["Restore backup", "Choose and restore a saved configuration", ["buchhwin-backup", "restore"]], ["Open backups", "Browse installer and manual backups", ["buchhwin-backup", "open"]], ["Export theme", "Save colors, fonts and shell appearance", ["buchhwin-theme", "export"]], ["Import theme", "Load a previously exported theme", ["buchhwin-theme", "import"]]]
                             delegate: Rectangle {
                                 required property var modelData
                                 Layout.fillWidth: true; Layout.preferredHeight: 92

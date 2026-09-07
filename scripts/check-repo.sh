@@ -63,7 +63,7 @@ for file in shell.qml Theme.qml AudioState.qml Bar.qml Launcher.qml ControlCente
             NotificationService.qml NotificationCenter.qml NotificationPopups.qml \
             PowerMenu.qml Keybinds.qml ClipboardHistory.qml Settings.qml \
             NetworkPanel.qml BluetoothPanel.qml AudioPanel.qml AppearanceStyleSettings.qml \
-            ConnectionsSettings.qml; do
+            ConnectionsSettings.qml SystemTray.qml PowerSettings.qml; do
   [[ -s "config/quickshell/buchhwin/$file" ]] || { echo "Missing QML file: $file" >&2; exit 1; }
 done
 for key in font theme accent background bar text barPosition; do

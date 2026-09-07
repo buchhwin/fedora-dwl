@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Add a StatusNotifier system tray for background applications.
+- Add dwl-only idle locking, display power, suspend and night-light controls.
+- Add notification do-not-disturb and improve Settings sizing and scrolling.
+- Stop hidden Settings pages from polling devices and serialize audio/network actions.
+- Keep Wi-Fi passwords out of process arguments by sending them through stdin.
+- Pin and verify downloaded Nerd Font and Starship archives, and fix the ARM64 Starship asset.
+- Avoid unnecessary KonsoleKalendar portal registration warnings.
 - Complete embedded sound settings with outputs, inputs and application streams.
 - Add Super+Alt+Space to switch directly between side-by-side and top-and-bottom tiling.
 - Remove the cryptic dwl layout symbol (such as `TTT`) from the bar while keeping all layout shortcuts available.

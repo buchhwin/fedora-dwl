@@ -5,6 +5,7 @@ import QtQuick.Layouts
 Item {
     id: root
     required property var audioState
+    property bool active: false
     property int tab: 0
     property int audioTab: 0
     property var items: []
@@ -12,6 +13,10 @@ Item {
     property string pendingSsid: ""
     property bool wifiPowered: true
     property bool bluetoothPowered: false
+    property var pendingCommand: null
+    property string pendingMessage: ""
+    property string pendingInput: ""
+    property string actionInput: ""
     Theme { id: theme }
 
     function refresh() {
@@ -22,14 +27,18 @@ Item {
             audioList.running = true
         }
     }
-    function run(command, message) {
-        status = message
-        action.command = command
-        action.running = true
+    function run(command, message, input) {
+        pendingCommand = command; pendingMessage = message; pendingInput = input || ""
+        flushAction()
+    }
+    function flushAction() {
+        if (action.running || !pendingCommand) return
+        status = pendingMessage; action.command = pendingCommand; actionInput = pendingInput
+        pendingCommand = null; pendingInput = ""; action.running = true
     }
     onTabChanged: refresh()
     onAudioTabChanged: { items = []; refresh() }
-    Component.onCompleted: refresh()
+    onActiveChanged: if (active) refresh()
 
     Process { id: wifiState; command: ["nmcli", "-g", "WIFI", "general"]; stdout: StdioCollector { onStreamFinished: root.wifiPowered = text.trim() === "enabled" } }
     Process {
@@ -56,9 +65,14 @@ Item {
             else if (root.audioTab === 2 && f.length >= 4) found.push({name:f[0],description:f[1],volume:parseInt(f[2])||0,muted:f[3]==="yes",isDefault:false})
         } root.items=found
     } } }
-    Process { id: action; onExited: code => { root.status = code === 0 ? "Updated" : "Action failed"; refreshDelay.restart() } }
+    Process {
+        id: action; stdinEnabled: true
+        stderr: StdioCollector { onStreamFinished: if (text.trim().length) root.status = text.trim().split("\n").pop() }
+        onStarted: if (root.actionInput.length) { write(root.actionInput + "\n"); root.actionInput = "" }
+        onExited: code => { root.status = code === 0 ? "Updated" : (root.status || "Action failed"); refreshDelay.restart(); root.flushAction() }
+    }
     Timer { id: refreshDelay; interval: 500; onTriggered: root.refresh() }
-    Timer { interval: 5000; running: true; repeat: true; onTriggered: root.refresh() }
+    Timer { interval: 5000; running: root.active; repeat: true; onTriggered: root.refresh() }
 
     ColumnLayout {
         anchors.fill: parent; spacing: 12
@@ -126,7 +140,7 @@ Item {
                 }
                 Rectangle { width: 82; height: 34; radius: 6; color: theme.blue
                     Text { anchors.centerIn: parent; text: "Connect"; color: theme.bg; font.family: theme.font }
-                    MouseArea { anchors.fill: parent; onClicked: { root.run(["nmcli","device","wifi","connect",root.pendingSsid,"password",wifiPassword.text], "Connecting…"); root.pendingSsid=""; wifiPassword.text="" } }
+                    MouseArea { anchors.fill: parent; onClicked: { root.run(["nmcli","--ask","device","wifi","connect",root.pendingSsid], "Connecting…", wifiPassword.text); root.pendingSsid=""; wifiPassword.text="" } }
                 }
             }
         }

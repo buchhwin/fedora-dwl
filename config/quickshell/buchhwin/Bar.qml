@@ -107,9 +107,9 @@ Scope {
             screen: modelData
             color: "transparent"
             property bool vertical: theme.barPosition === "left" || theme.barPosition === "right"
-            implicitHeight: vertical ? 0 : 38
-            implicitWidth: vertical ? 44 : 0
-            exclusiveZone: vertical ? 44 : 38
+            implicitHeight: vertical ? 0 : theme.barSize
+            implicitWidth: vertical ? theme.barSize : 0
+            exclusiveZone: theme.barSize
             anchors {
                 top: theme.barPosition === "top" || vertical
                 bottom: theme.barPosition === "bottom" || vertical
@@ -345,6 +345,8 @@ Scope {
                         }
                     }
 
+                    SystemTray { hostWindow: panel }
+
                     Rectangle {
                         width: 30
                         height: 30; radius: 0; color: netMouse.containsMouse ? theme.surface3 : "transparent"
@@ -467,6 +469,7 @@ Scope {
                         }
                     }
                     Rectangle { width: 30; height: 1; color: theme.border }
+                    SystemTray { hostWindow: panel; vertical: true; anchors.horizontalCenter: parent.horizontalCenter }
                     Repeater {
                         model: [
                             [root.weather.icon || "󰖪", "weather"],

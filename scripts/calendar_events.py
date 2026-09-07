@@ -32,9 +32,9 @@ def main() -> int:
     start = dt.datetime.fromtimestamp(since).strftime("%Y-%m-%d")
     end = dt.datetime.fromtimestamp(until - 1).strftime("%Y-%m-%d")
     env = os.environ.copy()
-    env["LC_ALL"] = "C"
+    env["LC_ALL"] = "C.UTF-8"
     proc = subprocess.run(
-        ["konsolekalendar", "--allow-gui", "--view", "--date", start,
+        ["konsolekalendar", "--view", "--date", start,
          "--end-date", end, "--time", "00:00", "--end-time", "23:59",
          "--export-type", "CSV"], text=True, capture_output=True, env=env)
     if proc.returncode:

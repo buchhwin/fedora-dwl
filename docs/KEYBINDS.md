@@ -2,7 +2,7 @@
 
 | Shortcut | Action |
 |---|---|
-| `Super + Enter` | Open Alacritty with the buchhwin profile |
+| `Super + Enter` | Open Kitty with the buchhwin profile |
 | `Super + D` | Open application launcher |
 | `Super + B` | Open Brave browser |
 | `Super + E` | Open Files (Dolphin) |
@@ -26,6 +26,7 @@
 | `Super + F` | Floating layout |
 | `Super + Shift + M` | Monocle layout |
 | `Super + Space` | Cycle layout |
+| `Super + Alt + Space` | Switch side-by-side / top-and-bottom tiling |
 | `Super + Shift + Space` | Toggle focused window floating |
 | `Super + Shift + F` | Fullscreen |
 | `Super + 1..9` | Switch tag |

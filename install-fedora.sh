@@ -30,7 +30,7 @@ packages=(
   zsh-autosuggestions zsh-syntax-highlighting
   quickshell kitty alacritty xorg-x11-server-Xwayland NetworkManager bluez
   pipewire wireplumber pulseaudio-utils playerctl brightnessctl upower
-  swaybg swaylock grim slurp swappy wl-clipboard wlr-randr wdisplays
+  swaybg swaylock swayidle gammastep grim slurp swappy wl-clipboard wlr-randr wdisplays
   cliphist udiskie udisks2 gvfs gvfs-mtp libnotify
   xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-kde
   plasma-desktop plasma-workspace sddm qt6-qtwayland breeze-gtk
@@ -74,7 +74,8 @@ FONT_HOME="$DATA_HOME/fonts/MesloLGS"
 if ! fc-list 2>/dev/null | grep -qi "MesloLGS Nerd Font"; then
   font_tmp="$(mktemp -d)"
   curl -fsSL -o "$font_tmp/Meslo.zip" \
-    https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Meslo.zip
+    https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/Meslo.zip
+  echo "13b502ac8c2bd9d3161018064560e23cd42b175bb730780a270975265a19ad57  $font_tmp/Meslo.zip" | sha256sum -c -
   mkdir -p "$FONT_HOME"
   unzip -qo "$font_tmp/Meslo.zip" -d "$FONT_HOME"
   fc-cache -f "$DATA_HOME/fonts" >/dev/null
@@ -94,13 +95,14 @@ fi
 # ~/.local/bin so it is used only by this account and can be reproduced later.
 if [[ ! -x "$BIN_HOME/starship" ]]; then
   case "$(uname -m)" in
-    x86_64) starship_target=x86_64-unknown-linux-gnu ;;
-    aarch64) starship_target=aarch64-unknown-linux-gnu ;;
+    x86_64) starship_target=x86_64-unknown-linux-gnu; starship_sha=321f0dd7af8340a5f2e6a8fec6538a04f617486f9ec70d878f91c09cd8deef22 ;;
+    aarch64) starship_target=aarch64-unknown-linux-musl; starship_sha=dc30189378d2f2e287384e8a692d3f95ad1df64cf0e8c36aa9201516028aed6b ;;
     *) echo "Unsupported architecture for Starship: $(uname -m)" >&2; exit 1 ;;
   esac
   starship_tmp="$(mktemp -d)"
   curl -fsSL -o "$starship_tmp/starship.tar.gz" \
     "https://github.com/starship/starship/releases/download/v1.26.0/starship-${starship_target}.tar.gz"
+  echo "$starship_sha  $starship_tmp/starship.tar.gz" | sha256sum -c -
   tar -xzf "$starship_tmp/starship.tar.gz" -C "$starship_tmp" starship
   install -m755 "$starship_tmp/starship" "$BIN_HOME/starship"
   rm -rf -- "$starship_tmp"

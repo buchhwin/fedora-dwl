@@ -19,6 +19,7 @@ QtObject {
     readonly property color yellow: "#bcbcbc"
     readonly property string font: custom.font || "MesloLGS Nerd Font Mono"
     readonly property string barPosition: custom.barPosition || "top"
+    readonly property int barSize: Math.max(34, Math.min(64, Number(custom.barSize || 38)))
     property string appearancePath: (Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config") + "/buchhwin-dwl/appearance.json"
     property FileView appearanceFile: FileView {
         path: root.appearancePath

@@ -25,7 +25,7 @@ Scope {
         function onGenerationChanged() {
             root.current = service.latest
             root.seenGeneration = service.generation
-            root.showing = root.current !== null
+            root.showing = root.current !== null && !service.doNotDisturb
             dismissTimer.restart()
         }
     }

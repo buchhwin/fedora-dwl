@@ -12,8 +12,8 @@ import sys
 
 def run(arguments: list[str]) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
-    env["LC_ALL"] = "C"
-    return subprocess.run(["konsolekalendar", "--allow-gui", *arguments],
+    env["LC_ALL"] = "C.UTF-8"
+    return subprocess.run(["konsolekalendar", *arguments],
                           text=True, capture_output=True, env=env)
 
 

@@ -25,7 +25,7 @@ PanelWindow {
     exclusiveZone: 0
     implicitWidth: 430
     anchors { top: true; bottom: true; right: true }
-    margins { top: 38; right: 0; bottom: 0 }
+    margins { top: theme.barPosition === "top" ? theme.barSize : 0; right: theme.barPosition === "right" ? theme.barSize : 0; bottom: theme.barPosition === "bottom" ? theme.barSize : 0 }
     WlrLayershell.keyboardFocus: opened ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
     WlrLayershell.namespace: "buchhwin-notifications"
     Shortcut { sequence: "Escape"; enabled: root.opened; onActivated: root.opened = false }
@@ -48,6 +48,11 @@ PanelWindow {
                 Layout.fillWidth: true
                 Text { font.family: theme.font; text: "Notifications"; color: theme.text; font.pixelSize: 20; font.bold: true }
                 Item { Layout.fillWidth: true }
+                Rectangle {
+                    width: 118; height: 30; radius: 9; color: service.doNotDisturb ? theme.blue : theme.surface2
+                    Text { anchors.centerIn: parent; text: service.doNotDisturb ? "󰂛  DND on" : "󰂚  DND off"; color: service.doNotDisturb ? theme.bg : theme.subtext; font.family: theme.font; font.pixelSize: 10 }
+                    MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: service.doNotDisturb = !service.doNotDisturb }
+                }
                 Rectangle {
                     width: 88; height: 30; radius: 9; color: theme.surface2
                     Text { font.family: theme.font; anchors.centerIn: parent; text: "Clear all"; color: theme.subtext; font.pixelSize: 11 }
